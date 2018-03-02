@@ -1,11 +1,11 @@
 pragma solidity ^0.4.19;
 
 import './zeppelin/ownership/Ownable.sol';
-import './BigbomContributorList.sol';
+import './BigbomPrivateSale2List.sol';
 import './zeppelin/math/SafeMath.sol';
 
 contract ContributorApprover {
-    BigbomContributorList public list;
+    BigbomPrivateSale2List public list;
     mapping(address=>uint)    public participated;
 
     uint                      public cappedSaleStartTime;
@@ -15,7 +15,7 @@ contract ContributorApprover {
     using SafeMath for uint;
 
 
-    function ContributorApprover( BigbomContributorList _whitelistContract,
+    function ContributorApprover( BigbomPrivateSale2List _whitelistContract,
                                   uint                      _cappedSaleStartTime,
                                   uint                      _openSaleStartTime,
                                   uint                      _openSaleEndTime ) {
@@ -24,7 +24,7 @@ contract ContributorApprover {
         openSaleStartTime = _openSaleStartTime;
         openSaleEndTime = _openSaleEndTime;
 
-        require( list != BigbomContributorList(0x0) );
+        require( list != BigbomPrivateSale2List(0x0) );
         require( cappedSaleStartTime < openSaleStartTime );
         require(  openSaleStartTime < openSaleEndTime );
     }

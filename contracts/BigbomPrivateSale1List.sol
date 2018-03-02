@@ -2,13 +2,13 @@ pragma solidity ^0.4.19;
 
 import './zeppelin/ownership/Ownable.sol';
 
-contract BigbomContributorList is Ownable {
+contract BigbomPrivateSale1List is Ownable {
     // cap is in wei. The value of 11 is just a stub.
     // after kyc registration ends, we change it to the actual value with setSlackUsersCap
     uint public slackUsersCap = 11;
     mapping(address=>uint) public addressCap;
 
-    function BigbomContributorList() {}
+    function BigbomPrivateSale1List() {}
 
     event ListAddress( address _user, uint _cap, uint _time );
 
