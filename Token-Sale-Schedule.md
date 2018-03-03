@@ -1,4 +1,4 @@
-Token Sale Descriptions:
+###Token Sale Descriptions:
 
 1. On day T-15, deploy Founder, Core Staff and Advisor List.
 2. On day T-10, deploy Pre-Sale Contributor WhiteList. This is white list of VCs/Funds that has committed funding into Bigbom. At min cap is required for these Contributors
