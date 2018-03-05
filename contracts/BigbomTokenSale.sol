@@ -1,47 +1,62 @@
 pragma solidity ^0.4.19;
 
 import './BigbomToken.sol';
-import './ContributorApprover.sol';
-import './BigbomPrivateSale2.sol';
+import './zeppelin/ownership/Ownable.sol';
+import './BigbomContributorWhiteList.sol';
+import './zeppelin/math/SafeMath.sol';
 
-contract BigbomTokenSale is ContributorApprover {
+contract BigbomTokenSale {
     address             public admin;
-    address             public kyberMultiSigWallet;
+    address             public bigbomMultiSigWallet;
     BigbomToken public token;
     uint                public raisedWei;
     bool                public haltSale;
+    uint                      public openSaleStartTime;
+    uint                      public openSaleEndTime;
+    BigbomContributorWhiteList public list;
 
     mapping(bytes32=>uint) public proxyPurchases;
+    using SafeMath for uint;
 
     function BigbomTokenSale( address _admin,
-                                    address _kyberMultiSigWallet,
-                                    BigbomPrivateSale2 _whilteListContract,
+                                    address _bigbomMultiSigWallet,
+                                    BigbomContributorWhiteList _whilteListContract,
                                     uint _totalTokenSupply,
                                     uint _premintedTokenSupply,
-                                    uint _cappedSaleStartTime,
                                     uint _publicSaleStartTime,
                                     uint _publicSaleEndTime )
 
-        ContributorApprover( _whilteListContract,
-                             _cappedSaleStartTime,
-                             _publicSaleStartTime,
-                             _publicSaleEndTime )
+       
     {
         admin = _admin;
-        kyberMultiSigWallet = _kyberMultiSigWallet;
+        bigbomMultiSigWallet = _bigbomMultiSigWallet;
+        list = _whilteListContract;
 
         token = new BigbomToken( _totalTokenSupply,
-                                         _cappedSaleStartTime,
+                                         _publicSaleStartTime,
                                          _publicSaleEndTime + 7 days,
                                          _admin );
 
         // transfer preminted tokens to company wallet
-        token.transfer( kyberMultiSigWallet, _premintedTokenSupply );
+        token.transfer( bigbomMultiSigWallet, _premintedTokenSupply );
+        // freezeAccount company wallet
+        token.freezeAccount( bigbomMultiSigWallet, true);
+    }
+    function saleEnded() constant returns(bool) {
+        return now > openSaleEndTime;
+    }
+
+    function saleStarted() constant returns(bool) {
+        return now >= openSaleStartTime;
     }
 
     function setHaltSale( bool halt ) {
         require( msg.sender == admin );
         haltSale = halt;
+    }
+    // this is a seperate function so user could query it before crowdsale starts
+    function contributorCap( address contributor ) constant returns(uint) {
+        return list.getCap( contributor );
     }
 
     function() payable {
@@ -57,7 +72,26 @@ contract BigbomTokenSale is ContributorApprover {
         return amount;
     }
 
-    event Buy( address _buyer, uint _tokens, uint _payedWei );
+
+    function getBonus(uint _tokens) return (uint){
+        if (now > openSaleStartTime && now < (openSaleStartTime+3 days)){
+            return _tokens.mul(60).div(100);
+        }else if (now > (openSaleStartTime+3 days) && now < (openSaleStartTime+16 days)){
+            return _tokens.mul(25).div(100);
+        }else if (now > (openSaleStartTime+16 days) && now < (openSaleStartTime+27 days)){
+            return _tokens.mul(15).div(100);
+        }else if (now > (openSaleStartTime+27 days) && now < (openSaleStartTime+37 days)){
+            return _tokens.mul(10).div(100);
+        }else if (now > (openSaleStartTime+37 days) && now < (openSaleStartTime+47 days)){
+            return _tokens.mul(5).div(100);
+        }else if (now > (openSaleStartTime+47 days) && now < (openSaleStartTime+52 days)){
+            return _tokens.mul(3).div(100);
+        }else{
+            return 0;
+        }
+    }
+
+    event Buy( address _buyer, uint _tokens, uint _payedWei, uint _bonus );
     function buy( address recipient ) payable returns(uint){
         require( tx.gasprice <= 50000000000 wei );
 
@@ -65,30 +99,34 @@ contract BigbomTokenSale is ContributorApprover {
         require( saleStarted() );
         require( ! saleEnded() );
 
-        uint weiPayment = eligibleTestAndIncrement( recipient, msg.value );
+        uint mincap = contributorCap(contributor); 
 
-        require( weiPayment > 0 );
-
-        // send to msg.sender, not to recipient
-        if( msg.value > weiPayment ) {
-            msg.sender.transfer( msg.value.sub( weiPayment ) );
+        require( mincap > 0 );
+        // fail if msg.value < mincap
+        require (msg.value >= mincap)
+        // send to msg.sender, not to recipient if value > 3ETH (3e18)
+        if( msg.value > 3e18  ) {
+            msg.sender.transfer( msg.value.sub( 3e18 ) );
         }
 
         // send payment to wallet
-        sendETHToMultiSig( weiPayment );
-        raisedWei = raisedWei.add( weiPayment );
-        uint recievedTokens = weiPayment.mul( 600 );
-
+        sendETHToMultiSig( msg.value );
+        raisedWei = raisedWei.add( msg.value );
+        // 1ETH = 2500 BBO
+        uint recievedTokens = msg.value.mul( 2500 );
+        // TODO bounce
+        uint bonus = getBonus(recievedTokens);
+        recievedTokens = recievedTokens.add(bonus);
         assert( token.transfer( recipient, recievedTokens ) );
+        //
 
+        Buy( recipient, recievedTokens, msg.value, bonus );
 
-        Buy( recipient, recievedTokens, weiPayment );
-
-        return weiPayment;
+        return msg.value;
     }
 
     function sendETHToMultiSig( uint value ) internal {
-        kyberMultiSigWallet.transfer( value );
+        bigbomMultiSigWallet.transfer( value );
     }
 
     event FinalizeSale();
@@ -114,7 +152,7 @@ contract BigbomTokenSale is ContributorApprover {
         }
 
         if( anyToken != address(0x0) ) {
-            assert( anyToken.transfer(kyberMultiSigWallet, anyToken.balanceOf(this)) );
+            assert( anyToken.transfer(bigbomMultiSigWallet, anyToken.balanceOf(this)) );
         }
 
         return true;

@@ -2,17 +2,9 @@ pragma solidity ^0.4.19;
 
 import './zeppelin/token/StandardToken.sol';
 import './zeppelin/ownership/Ownable.sol';
-import './BigbomAdvisorList.sol';
-import './BigbomCoreStaffList.sol';
-import './BigbomFounderList.sol';
-import './BigbomPrivateSale1List.sol';
 
 contract BigBomToken is StandardToken, Ownable {
-    BigbomAdvisorList public advisorList;
-    BigbomCoreStaffList public coreStaffList;
-    BigbomFounderList public founderList;
-    BigbomPrivateSale1List public privateSale1List;
-
+    
     string  public  constant name = "Bigbom";
     string  public  constant symbol = "BBO";
     uint    public  constant decimals = 18;
@@ -22,13 +14,32 @@ contract BigBomToken is StandardToken, Ownable {
     uint    public  coreStaffAmount; // 60,000,000
     uint    public  advisorAmount; // 100,000,000
     uint    public  reserveAmount; // 500,000,000
+    uint    public  bountyAmount; //
 
     uint    public  saleStartTime;
     uint    public  saleEndTime;
 
     address public  tokenSaleContract;
 
-    bool    public  istransferPrivateSale1;
+    mapping (address => bool) public frozenAccount;
+
+    /* This generates a public event on the blockchain that will notify clients */
+    event FrozenFunds(address target, bool frozen);
+    /// @notice `freeze? Prevent | Allow` `target` from sending & receiving tokens
+    /// @param target Address to be frozen
+    /// @param freeze either to freeze it or not
+    function freezeAccount(address target, bool freeze) onlyOwner public {
+        frozenAccount[target] = freeze;
+        FrozenFunds(target, freeze);
+    }
+
+    modifier validDestination( address to ) {
+        require(to != address(0x0));
+        require(to != address(this) );
+        require(!frozenAccount[_from]);                     // Check if sender is frozen
+        require(!frozenAccount[_to]);                       // Check if recipient is frozen
+        _;
+    }
 
     modifier onlyWhenTransferEnabled() {
         if( now <= saleEndTime && now >= saleStartTime ) {
@@ -37,23 +48,16 @@ contract BigBomToken is StandardToken, Ownable {
         _;
     }
 
-   
-
-    modifier validDestination( address to ) {
-        require(to != address(0x0));
-        require(to != address(this) );
-        _;
-    }
-
-    function BigBomToken(uint startTime, uint endTime, address admin, uint _founderAmount, uint _coreStaffAmount, uint _advisorAmount, uint _reserveAmount) {
+    function BigBomToken(uint startTime, uint endTime, address admin, uint _founderAmount, uint _coreStaffAmount, uint _advisorAmount, uint _reserveAmount, uint _bountyAmount) {
         // Mint all tokens. Then disable minting forever.
         balances[msg.sender] = totalSupply;
         Transfer(address(0x0), msg.sender, totalSupply);
-
+        // init internal amount limit
         founderAmount = _founderAmount;
         coreStaffAmount = _coreStaffAmount;
         advisorAmount = _advisorAmount;
         reserveAmount = _reserveAmount;
+        bountyAmount  = _bountyAmount;
 
         saleStartTime = startTime;
         saleEndTime = endTime;

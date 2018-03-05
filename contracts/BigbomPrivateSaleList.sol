@@ -2,12 +2,12 @@ pragma solidity ^0.4.19;
 
 import './zeppelin/ownership/Ownable.sol';
 
-contract BigbomPrivateSale1List is Ownable {
+contract BigbomPrivateSaleList is Ownable {
     // amount is in wei. The value of 11 is just a stub.
     uint public usersAmount = 11;
     mapping(address=>uint) public addressCap;
 
-    function BigbomPrivateSale1List() {}
+    function BigbomPrivateSaleList() {}
 
     event ListAddress( address _user, uint _amount, uint _time );
 
