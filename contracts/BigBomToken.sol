@@ -2,8 +2,17 @@ pragma solidity ^0.4.19;
 
 import './zeppelin/token/StandardToken.sol';
 import './zeppelin/ownership/Ownable.sol';
+import './BigbomAdvisorList.sol';
+import './BigbomCoreStaffList.sol';
+import './BigbomFounderList.sol';
+import './BigbomPrivateSale1List.sol';
 
 contract BigBomToken is StandardToken, Ownable {
+    BigbomAdvisorList public advisorList;
+    BigbomCoreStaffList public coreStaffList;
+    BigbomFounderList public founderList;
+    BigbomPrivateSale1List public privateSale1List;
+
     string  public  constant name = "Bigbom";
     string  public  constant symbol = "BBO";
     uint    public  constant decimals = 18;
@@ -19,6 +28,7 @@ contract BigBomToken is StandardToken, Ownable {
 
     address public  tokenSaleContract;
 
+    bool    public  istransferPrivateSale1;
 
     modifier onlyWhenTransferEnabled() {
         if( now <= saleEndTime && now >= saleStartTime ) {
@@ -26,6 +36,8 @@ contract BigBomToken is StandardToken, Ownable {
         }
         _;
     }
+
+   
 
     modifier validDestination( address to ) {
         require(to != address(0x0));
