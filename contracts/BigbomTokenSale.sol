@@ -74,17 +74,17 @@ contract BigbomTokenSale {
 
 
     function getBonus(uint _tokens) return (uint){
-        if (now > openSaleStartTime && now < (openSaleStartTime+3 days)){
+        if (now > openSaleStartTime && now <= (openSaleStartTime+3 days)){
             return _tokens.mul(60).div(100);
-        }else if (now > (openSaleStartTime+3 days) && now < (openSaleStartTime+16 days)){
+        }else if (now > (openSaleStartTime+3  days) && now <= (openSaleStartTime+16 days)){
             return _tokens.mul(25).div(100);
-        }else if (now > (openSaleStartTime+16 days) && now < (openSaleStartTime+27 days)){
+        }else if (now > (openSaleStartTime+16 days) && now <= (openSaleStartTime+27 days)){
             return _tokens.mul(15).div(100);
-        }else if (now > (openSaleStartTime+27 days) && now < (openSaleStartTime+37 days)){
+        }else if (now > (openSaleStartTime+27 days) && now <= (openSaleStartTime+37 days)){
             return _tokens.mul(10).div(100);
-        }else if (now > (openSaleStartTime+37 days) && now < (openSaleStartTime+47 days)){
+        }else if (now > (openSaleStartTime+37 days) && now <= (openSaleStartTime+47 days)){
             return _tokens.mul(5).div(100);
-        }else if (now > (openSaleStartTime+47 days) && now < (openSaleStartTime+52 days)){
+        }else if (now > (openSaleStartTime+47 days) && now <= (openSaleStartTime+52 days)){
             return _tokens.mul(3).div(100);
         }else{
             return 0;
