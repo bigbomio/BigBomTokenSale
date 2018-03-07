@@ -9,7 +9,7 @@ import './zeppelin/math/SafeMath.sol';
 contract BigbomTokenSale {
     address             public admin;
     address             public bigbomMultiSigWallet;
-    BigbomToken public token;
+    BigbomToken         public token;
     uint                public raisedWei;
     bool                public haltSale;
     uint                      public openSaleStartTime;
@@ -22,8 +22,6 @@ contract BigbomTokenSale {
     function BigbomTokenSale( address _admin,
                                     address _bigbomMultiSigWallet,
                                     BigbomContributorWhiteList _whilteListContract,
-                                    BigbomPrivateSaleList _privateSaleList,
-                                    uint _totalTokenSupply,
                                     uint _premintedTokenSupply,
                                     uint _publicSaleStartTime,
                                     uint _publicSaleEndTime,
@@ -50,8 +48,8 @@ contract BigbomTokenSale {
                                 _coreStaffAmount,
                                 _advisorAmount,  
                                 _reserveAmount,  
-                                _bountyAmount, 
-                                _privateSaleList);
+                                _bountyAmount 
+                                );
 
         // transfer preminted tokens to company wallet
         token.transfer( bigbomMultiSigWallet, _premintedTokenSupply );
@@ -89,7 +87,7 @@ contract BigbomTokenSale {
     }
 
 
-    function getBonus(uint _tokens) return (uint){
+    function getBonus(uint _tokens) returns (uint){
         if (now > openSaleStartTime && now <= (openSaleStartTime+3 days)){
             return _tokens.mul(60).div(100);
         }else if (now > (openSaleStartTime+3  days) && now <= (openSaleStartTime+16 days)){
@@ -115,11 +113,11 @@ contract BigbomTokenSale {
         require( saleStarted() );
         require( ! saleEnded() );
 
-        uint mincap = contributorCap(contributor); 
+        uint mincap = contributorCap(recipient); 
 
         require( mincap > 0 );
         // fail if msg.value < mincap
-        require (msg.value >= mincap)
+        require (msg.value >= mincap);
         // send to msg.sender, not to recipient if value > 3ETH (3e18)
         if( msg.value > 3e18  ) {
             msg.sender.transfer( msg.value.sub( 3e18 ) );

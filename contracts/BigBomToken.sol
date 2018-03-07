@@ -4,12 +4,12 @@ import './zeppelin/token/StandardToken.sol';
 import './zeppelin/ownership/Ownable.sol';
 import './BigbomPrivateSaleList.sol';
 
-contract BigBomToken is StandardToken, Ownable {
+contract BigbomToken is StandardToken, Ownable {
     
     string  public  constant name = "Bigbom";
     string  public  constant symbol = "BBO";
     uint    public  constant decimals = 18;
-    uint    public  constant totalSupply = 2000000000; //2,000,000,000
+    uint    public   totalSupply = 2000000000; //2,000,000,000
 
     uint    public  founderAmount; // 200,000,000
     uint    public  coreStaffAmount; // 60,000,000
@@ -38,11 +38,13 @@ contract BigBomToken is StandardToken, Ownable {
     modifier validDestination( address to ) {
         require(to != address(0x0));
         require(to != address(this) );
-        require(!frozenAccount[_from]);                     // Check if sender is frozen
-        require(!frozenAccount[_to]);                       // Check if recipient is frozen
+        require(!frozenAccount[to]);                       // Check if recipient is frozen
         _;
     }
-
+    modifier validFrom(address from){
+        require(!frozenAccount[from]);                     // Check if sender is frozen
+        _;
+    }
     modifier onlyWhenTransferEnabled() {
         if( now <= saleEndTime && now >= saleStartTime ) {
             require( msg.sender == tokenSaleContract );
@@ -57,7 +59,12 @@ contract BigBomToken is StandardToken, Ownable {
         }
         _;
     }
-    function BigBomToken(uint startTime, uint endTime, address admin, uint _founderAmount, uint _coreStaffAmount, uint _advisorAmount, uint _reserveAmount, uint _bountyAmount, BigbomPrivateSaleList _privateSaleList) {
+    function setPrivateList(BigbomPrivateSaleList _privateSaleList) onlyOwner {
+                privateSaleList = _privateSaleList;
+
+    }
+    function BigbomToken(uint startTime, uint endTime, address admin, uint _founderAmount, uint _coreStaffAmount, uint _advisorAmount,
+     uint _reserveAmount, uint _bountyAmount) {
         // Mint all tokens. Then disable minting forever.
         balances[msg.sender] = totalSupply;
         Transfer(address(0x0), msg.sender, totalSupply);
@@ -67,7 +74,6 @@ contract BigBomToken is StandardToken, Ownable {
         advisorAmount = _advisorAmount;
         reserveAmount = _reserveAmount;
         bountyAmount  = _bountyAmount;
-        privateSaleList = _privateSaleList;
         saleStartTime = startTime;
         saleEndTime = endTime;
 
@@ -78,6 +84,7 @@ contract BigBomToken is StandardToken, Ownable {
     function transfer(address _to, uint _value)
         onlyWhenTransferEnabled
         validDestination(_to)
+        validFrom(msg.sender)
         returns (bool) {
         return super.transfer(_to, _value);
     }
@@ -85,7 +92,7 @@ contract BigBomToken is StandardToken, Ownable {
     function transferFrom(address _from, address _to, uint _value)
         onlyWhenTransferEnabled
         validDestination(_to)
-        onlyPrivateListEnabled(_to);
+        onlyPrivateListEnabled(_to)
         returns (bool) {
         return super.transferFrom(_from, _to, _value);
     }

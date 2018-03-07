@@ -13,32 +13,28 @@ Date.time = function() { return Date.now().getUnixTime(); }
 var tokenSaleContract;
 
 module.exports = function(deployer) {
-    var admin = "0x123";
-    var multisig = "0x456";
+    var admin = "0x6D58F2848156A8B3Bd18cB9Ce4392a876E558eC9";
+    var multisig = "0xceFC2e92cD266Df7672D20D0e00Cf78aaf2f060f";
     var whiteListInstance;
-    var totalSupply = web3.toWei( 226000000, "ether");
-    var premintedSupply = totalSupply / 2;
-    var publicSaleStartTime = new Date('Sat, 16 Sep 2017 06:00:00 GMT').getUnixTime();
-    var publicSaleEndTime = new Date('Sun, 17 Sep 2017 06:00:00 GMT').getUnixTime();
-    var founderAmount = 0;
-	var coreStaffAmount = 0 ;
-    var advisorAmount = 0;
-    var reserveAmount = 0; 
-    var bountyAmount = 0;
+    var premintedSupply = web3.toWei( 1000000000, "ether");
+    var publicSaleStartTime = new Date('Thu, 08 Mar 2018 07:00:00 GMT').getUnixTime();
+    var publicSaleEndTime = new Date('Mon, 12 Mar 2018 07:00:00 GMT').getUnixTime();
+    var founderAmount = web3.toWei( 200000000, "ether");
+	var coreStaffAmount = web3.toWei( 60000000, "ether");
+    var advisorAmount = web3.toWei( 140000000, "ether");
+    var reserveAmount = web3.toWei( 330000000, "ether"); 
+    var bountyAmount = web3.toWei( 40000000, "ether");
+
+
+
 
     return WhiteList.new().then(function(instance){
         whiteListInstance = instance;
-        return whiteListInstance.listAddress("0x789", 1); // list as slack user
+        return whiteListInstance.listAddress("0x6D58F2848156A8B3Bd18cB9Ce4392a876E558eC9", web3.toWei( 1000, "ether")); // list as slack user
     }).then(function(){
-    	return PrivateList.new().then(function(instance2){
-	        privateListInstance = instance2;
-	        return privateListInstance.listAddress("0x789", 1); // list as slack user
-	    }).then(function()){
     		return TokenSale.new( admin,
                       		multisig,
                       		whiteListInstance.address,
-                            privateListInstance.address,
-                            totalSupply,
                             premintedSupply,
                             publicSaleStartTime,
                             publicSaleEndTime,
@@ -47,7 +43,7 @@ module.exports = function(deployer) {
                             advisorAmount, 
                             reserveAmount, 
                             bountyAmount );
-	    }
+	    
         
     }).then(function(result){
         tokenSaleContract = result;
