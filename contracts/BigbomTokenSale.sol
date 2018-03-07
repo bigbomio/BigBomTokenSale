@@ -3,6 +3,7 @@ pragma solidity ^0.4.19;
 import './BigbomToken.sol';
 import './zeppelin/ownership/Ownable.sol';
 import './BigbomContributorWhiteList.sol';
+import './BigbomPrivateSaleList.sol';
 import './zeppelin/math/SafeMath.sol';
 
 contract BigbomTokenSale {
@@ -21,10 +22,16 @@ contract BigbomTokenSale {
     function BigbomTokenSale( address _admin,
                                     address _bigbomMultiSigWallet,
                                     BigbomContributorWhiteList _whilteListContract,
+                                    BigbomPrivateSaleList _privateSaleList,
                                     uint _totalTokenSupply,
                                     uint _premintedTokenSupply,
                                     uint _publicSaleStartTime,
-                                    uint _publicSaleEndTime )
+                                    uint _publicSaleEndTime,
+                                    uint _founderAmount, 
+                                    uint _coreStaffAmount,
+                                    uint _advisorAmount, 
+                                    uint _reserveAmount, 
+                                    uint _bountyAmount )
 
        
     {
@@ -32,10 +39,19 @@ contract BigbomTokenSale {
         bigbomMultiSigWallet = _bigbomMultiSigWallet;
         list = _whilteListContract;
 
-        token = new BigbomToken( _totalTokenSupply,
-                                         _publicSaleStartTime,
-                                         _publicSaleEndTime + 7 days,
-                                         _admin );
+        // token = new BigbomToken( _totalTokenSupply,
+        //                                  _publicSaleStartTime,
+        //                                  _publicSaleEndTime + 7 days,
+        //                                  _admin );
+        token = new BigbomToken( _publicSaleStartTime, 
+                                _publicSaleEndTime + 7 days, 
+                                _admin,  
+                                _founderAmount,  
+                                _coreStaffAmount,
+                                _advisorAmount,  
+                                _reserveAmount,  
+                                _bountyAmount, 
+                                _privateSaleList);
 
         // transfer preminted tokens to company wallet
         token.transfer( bigbomMultiSigWallet, _premintedTokenSupply );

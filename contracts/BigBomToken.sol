@@ -2,6 +2,7 @@ pragma solidity ^0.4.19;
 
 import './zeppelin/token/StandardToken.sol';
 import './zeppelin/ownership/Ownable.sol';
+import './BigbomPrivateSaleList.sol';
 
 contract BigBomToken is StandardToken, Ownable {
     
@@ -20,6 +21,7 @@ contract BigBomToken is StandardToken, Ownable {
     uint    public  saleEndTime;
 
     address public  tokenSaleContract;
+    BigbomPrivateSaleList public privateSaleList;
 
     mapping (address => bool) public frozenAccount;
 
@@ -44,11 +46,18 @@ contract BigBomToken is StandardToken, Ownable {
     modifier onlyWhenTransferEnabled() {
         if( now <= saleEndTime && now >= saleStartTime ) {
             require( msg.sender == tokenSaleContract );
+
         }
         _;
     }
-
-    function BigBomToken(uint startTime, uint endTime, address admin, uint _founderAmount, uint _coreStaffAmount, uint _advisorAmount, uint _reserveAmount, uint _bountyAmount) {
+    modifier onlyPrivateListEnabled(address _to){
+        if(now <= saleStartTime){
+            uint allowcap = privateSaleList.getCap(_to);
+            require (allowcap > 0);
+        }
+        _;
+    }
+    function BigBomToken(uint startTime, uint endTime, address admin, uint _founderAmount, uint _coreStaffAmount, uint _advisorAmount, uint _reserveAmount, uint _bountyAmount, BigbomPrivateSaleList _privateSaleList) {
         // Mint all tokens. Then disable minting forever.
         balances[msg.sender] = totalSupply;
         Transfer(address(0x0), msg.sender, totalSupply);
@@ -58,7 +67,7 @@ contract BigBomToken is StandardToken, Ownable {
         advisorAmount = _advisorAmount;
         reserveAmount = _reserveAmount;
         bountyAmount  = _bountyAmount;
-
+        privateSaleList = _privateSaleList;
         saleStartTime = startTime;
         saleEndTime = endTime;
 
@@ -76,6 +85,7 @@ contract BigBomToken is StandardToken, Ownable {
     function transferFrom(address _from, address _to, uint _value)
         onlyWhenTransferEnabled
         validDestination(_to)
+        onlyPrivateListEnabled(_to);
         returns (bool) {
         return super.transferFrom(_from, _to, _value);
     }
