@@ -13,7 +13,7 @@ Date.time = function() { return Date.now().getUnixTime(); }
 var tokenSaleContract;
 
 module.exports = function(deployer) {
-    var admin = "0x6D58F2848156A8B3Bd18cB9Ce4392a876E558eC9";
+    var admin = "0x4e6b0ea30f13ff8a1ad799f70fd18947de575e5d";
     var multisig = "0xceFC2e92cD266Df7672D20D0e00Cf78aaf2f060f";
     var whiteListInstance;
     var premintedSupply = web3.toWei( 1000000000, "ether");
@@ -30,10 +30,10 @@ module.exports = function(deployer) {
 
     return WhiteList.new().then(function(instance){
         whiteListInstance = instance;
-        return whiteListInstance.listAddress("0x6D58F2848156A8B3Bd18cB9Ce4392a876E558eC9", web3.toWei( 1000, "ether")); // list as slack user
+        return whiteListInstance.listAddress("0x4e6b0ea30f13ff8a1ad799f70fd18947de575e5d", web3.toWei( 1000, "ether")); // list as slack user
     }).then(function(){
     	return BBToken.new( publicSaleStartTime, 
-                                publicSaleEndTime + 7 days, 
+                                publicSaleEndTime, 
                                 admin,  
                                 founderAmount, 
 	                            coreStaffAmount,
