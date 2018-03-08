@@ -34,28 +34,22 @@ module.exports = function(deployer) {
         whiteListInstance = instance;
         return whiteListInstance.listAddress("0x4e6b0ea30f13ff8a1ad799f70fd18947de575e5d", web3.toWei( 1000, "ether")); // list as slack user
     }).then(function(){
-    	return BBToken.new( publicSaleStartTime, 
-                                publicSaleEndTime, 
-                                admin,  
-                                founderAmount, 
-	                            coreStaffAmount,
-	                            advisorAmount, 
-	                            reserveAmount, 
-	                            bountyAmount 
-                                ).then(function(bbtoken){
-
-                                      bbtokenInstance = bbtoken;
+    	
          return TokenSale.new( admin,
                                     multisig,
                                     whiteListInstance.address,
                                     premintedSupply,
                                     publicSaleStartTime,
                                     publicSaleEndTime,
-                                    bbtokenInstance.address
+                                    founderAmount, 
+                                coreStaffAmount,
+                                advisorAmount, 
+                                reserveAmount, 
+                                bountyAmount 
                                   );
                                   
     }).then(function(result){
         tokenSaleContract = result;
     });
-});
+
 };

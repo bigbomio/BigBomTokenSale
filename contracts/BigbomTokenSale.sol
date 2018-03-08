@@ -25,7 +25,11 @@ contract BigbomTokenSale {
                                     uint _premintedTokenSupply,
                                     uint _publicSaleStartTime,
                                     uint _publicSaleEndTime,
-                                    BigbomToken _token)
+                                    uint founderAmount, 
+                                uint coreStaffAmount,
+                                uint advisorAmount, 
+                                uint reserveAmount, 
+                                uint bountyAmount)
                                     
 
        
@@ -35,11 +39,19 @@ contract BigbomTokenSale {
         list = _whilteListContract;
         openSaleStartTime = _publicSaleStartTime;
         openSaleEndTime = _publicSaleEndTime;
+        token = new BigbomToken(
+                                _publicSaleStartTime, 
+                                _publicSaleEndTime + 7 days, 
+                                _admin,  
+                                founderAmount, 
+                                coreStaffAmount,
+                                advisorAmount, 
+                                reserveAmount, 
+                                bountyAmount );
         // token = new BigbomToken( _totalTokenSupply,
         //                                  _publicSaleStartTime,
         //                                  _publicSaleEndTime + 7 days,
         //                                  _admin );
-        token = _token;
 
         // transfer preminted tokens to company wallet
         // token.transfer( bigbomMultiSigWallet, _premintedTokenSupply );
