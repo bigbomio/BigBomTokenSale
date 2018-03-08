@@ -33,7 +33,8 @@ contract BigbomTokenSale {
         admin = _admin;
         bigbomMultiSigWallet = _bigbomMultiSigWallet;
         list = _whilteListContract;
-
+        openSaleStartTime = _publicSaleStartTime;
+        openSaleEndTime = _publicSaleEndTime;
         // token = new BigbomToken( _totalTokenSupply,
         //                                  _publicSaleStartTime,
         //                                  _publicSaleEndTime + 7 days,
