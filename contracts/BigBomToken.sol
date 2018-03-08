@@ -76,7 +76,7 @@ contract BigbomToken is StandardToken, Ownable {
         bountyAmount  = _bountyAmount;
         saleStartTime = startTime;
         saleEndTime = endTime;
-
+        tokenSaleContract = msg.sender;
         transferOwnership(admin); // admin could drain tokens that were sent here by mistake
     }
 
