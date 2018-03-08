@@ -41,10 +41,11 @@ contract BigbomTokenSale {
         token = _token;
 
         // transfer preminted tokens to company wallet
-        token.transfer( bigbomMultiSigWallet, _premintedTokenSupply );
+        // token.transfer( bigbomMultiSigWallet, _premintedTokenSupply );
         // freezeAccount company wallet
-        token.freezeAccount( bigbomMultiSigWallet, true);
+        //
     }
+    
     function saleEnded() constant returns(bool) {
         return now > openSaleEndTime;
     }
@@ -66,14 +67,14 @@ contract BigbomTokenSale {
         buy( msg.sender );
     }
 
-    event ProxyBuy( bytes32 indexed _proxy, address _recipient, uint _amountInWei );
-    function proxyBuy( bytes32 proxy, address recipient ) payable returns(uint){
-        uint amount = buy( recipient );
-        proxyPurchases[proxy] = proxyPurchases[proxy].add(amount);
-        ProxyBuy( proxy, recipient, amount );
+    // event ProxyBuy( bytes32 indexed _proxy, address _recipient, uint _amountInWei );
+    // function proxyBuy( bytes32 proxy, address recipient ) payable returns(uint){
+    //     uint amount = buy( recipient );
+    //     proxyPurchases[proxy] = proxyPurchases[proxy].add(amount);
+    //     ProxyBuy( proxy, recipient, amount );
 
-        return amount;
-    }
+    //     return amount;
+    // }
 
 
     function getBonus(uint _tokens) returns (uint){

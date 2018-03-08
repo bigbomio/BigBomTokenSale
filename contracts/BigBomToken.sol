@@ -9,7 +9,7 @@ contract BigbomToken is StandardToken, Ownable {
     string  public  constant name = "Bigbom";
     string  public  constant symbol = "BBO";
     uint    public  constant decimals = 18;
-    uint    public   totalSupply = 2000000000; //2,000,000,000
+    uint    public   totalSupply = 2000000000 * 1e18; //2,000,000,000
 
     uint    public  founderAmount; // 200,000,000
     uint    public  coreStaffAmount; // 60,000,000
