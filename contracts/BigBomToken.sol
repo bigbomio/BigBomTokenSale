@@ -77,10 +77,12 @@ contract BigbomToken is StandardToken, Ownable {
         saleStartTime = startTime;
         saleEndTime = endTime;
 
-        tokenSaleContract = msg.sender;
         transferOwnership(admin); // admin could drain tokens that were sent here by mistake
     }
 
+    function setTokenSaleContract(address _tokenSaleContract) onlyOwner {
+        tokenSaleContract = _tokenSaleContract;
+    }
     function transfer(address _to, uint _value)
         onlyWhenTransferEnabled
         validDestination(_to)
