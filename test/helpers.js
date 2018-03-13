@@ -1,4 +1,3 @@
-var BigNumber = require('bignumber.js');
 
 var m_w = 123456789;
 var m_z = 987654321;
@@ -38,7 +37,7 @@ module.exports.getRandomBigInt = function() {
         string += Number(rand).toString(16);
     }
     
-    return (new BigNumber(string)).absoluteValue();
+    return web3.toWei( string, "ether") ;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -46,7 +45,7 @@ module.exports.getRandomBigInt = function() {
 module.exports.getRandomBigIntCapped = function( cap ) {
     var num = module.exports.getRandomBigInt();
     if( num.greaterThanOrEqualTo( cap ) ) {
-        if( cap.eq( new BigNumber(0) ) ) return cap;
+        if( cap.eq( 0 ) ) return cap;
         return num.modulo(cap);
     }
     else return num.absoluteValue();
