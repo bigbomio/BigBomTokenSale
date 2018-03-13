@@ -47,6 +47,7 @@ contract('contributor white list', function(accounts) {
         assert.fail("set cap should fail");
     }).catch(function(error){
         assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
+        reject(error);
         // check that value was not set
         return listContract.owner();
     }).then(function(result){
@@ -94,6 +95,7 @@ contract('contributor white list', function(accounts) {
         assert.fail("expected to fail");
     }).catch(function(error){
         assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
+        reject(error);
     });
   });
 
@@ -102,6 +104,7 @@ contract('contributor white list', function(accounts) {
         assert.fail("expected to fail");
     }).catch(function(error){
         assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
+        reject(error);
     });
   });
 
@@ -110,6 +113,7 @@ contract('contributor white list', function(accounts) {
         assert.fail("expected to fail");
     }).catch(function(error){
         assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
+        reject(error);
     });
   });
 
