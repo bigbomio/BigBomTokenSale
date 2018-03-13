@@ -16,47 +16,22 @@ contract BigbomTokenSale {
     uint                      public openSaleEndTime;
     BigbomContributorWhiteList public list;
 
-    mapping(bytes32=>uint) public proxyPurchases;
+    mapping(address=>uint)    public participated;
+
+    // mapping(bytes32=>uint) public proxyPurchases;
     using SafeMath for uint;
 
     function BigbomTokenSale( address _admin,
-                                    address _bigbomMultiSigWallet,
-                                    BigbomContributorWhiteList _whilteListContract,
-                                    uint _premintedTokenSupply,
-                                    uint _publicSaleStartTime,
-                                    uint _publicSaleEndTime,
-                                    uint founderAmount, 
-                                uint coreStaffAmount,
-                                uint advisorAmount, 
-                                uint reserveAmount, 
-                                uint bountyAmount)
-                                    
-
-       
+                              address _bigbomMultiSigWallet,
+                              BigbomContributorWhiteList _whilteListContract,
+                              uint _publicSaleStartTime,
+                              uint _publicSaleEndTime)       
     {
         admin = _admin;
         bigbomMultiSigWallet = _bigbomMultiSigWallet;
         list = _whilteListContract;
         openSaleStartTime = _publicSaleStartTime;
         openSaleEndTime = _publicSaleEndTime;
-        token = new BigbomToken(
-                                _publicSaleStartTime, 
-                                _publicSaleEndTime + 7 days, 
-                                _admin,  
-                                founderAmount, 
-                                coreStaffAmount,
-                                advisorAmount, 
-                                reserveAmount, 
-                                bountyAmount );
-        // token = new BigbomToken( _totalTokenSupply,
-        //                                  _publicSaleStartTime,
-        //                                  _publicSaleEndTime + 7 days,
-        //                                  _admin );
-
-        // transfer preminted tokens to company wallet
-        // token.transfer( bigbomMultiSigWallet, _premintedTokenSupply );
-        // freezeAccount company wallet
-        //
     }
     
     function saleEnded() constant returns(bool) {
@@ -72,8 +47,22 @@ contract BigbomTokenSale {
         haltSale = halt;
     }
     // this is a seperate function so user could query it before crowdsale starts
-    function contributorCap( address contributor ) constant returns(uint) {
-        return list.getCap( contributor );
+    function contributorMinCap( address contributor ) constant returns(uint) {
+        return list.getMinCap( contributor );
+    }
+    function contributorMaxCap( address contributor, uint amountInWei ) constant returns(uint) {
+        uint cap = list.getMaxCap( contributor );
+        if( cap == 0 ) return 0;
+        uint remainedCap = cap.sub( participated[ contributor ] );
+
+        if( remainedCap > amountInWei ) return amountInWei;
+        else return remainedCap;
+    }
+
+    function checkMaxCap( address contributor, uint amountInWei ) constant returns(uint) {
+        uint result = contributorMaxCap( contributor, amountInWei );
+        participated[contributor] = participated[contributor].add( result );
+        return result;
     }
 
     function() payable {
@@ -90,9 +79,21 @@ contract BigbomTokenSale {
     // }
 
 
-    function getBonus(uint _tokens) returns (uint){
+    function getBonus(uint _tokens, uint _amountInWei) returns (uint){
         if (now > openSaleStartTime && now <= (openSaleStartTime+3 days)){
-            return _tokens.mul(60).div(100);
+            if (_amountInWei >= 100*1e18 && _amountInWei < 300 * 1e18){
+                return  _tokens.mul(45).div(100);
+            }
+            if (_amountInWei >= 300*1e18 && _amountInWei < 500 * 1e18){
+                return  _tokens.mul(50).div(100);
+            }
+            if (_amountInWei >= 500*1e18 && _amountInWei < 1000 * 1e18){
+                return  _tokens.mul(60).div(100);
+            }
+            if (_amountInWei >= 1000*1e18 && _amountInWei <= 3000 * 1e18){
+                return  _tokens.mul(65).div(100);
+            }
+            return _tokens.mul(25).div(100);
         }else if (now > (openSaleStartTime+3  days) && now <= (openSaleStartTime+16 days)){
             return _tokens.mul(25).div(100);
         }else if (now > (openSaleStartTime+16 days) && now <= (openSaleStartTime+27 days)){
@@ -116,23 +117,26 @@ contract BigbomTokenSale {
         require( saleStarted() );
         require( ! saleEnded() );
 
-        uint mincap = contributorCap(recipient); 
+        uint mincap = contributorMinCap(recipient);
+
+        uint maxcap = checkMaxCap(recipient, msg.value );
 
         require( mincap > 0 );
+        require( maxcap > 0 );
         // fail if msg.value < mincap
         require (msg.value >= mincap);
-        // send to msg.sender, not to recipient if value > 3ETH (3e18)
-        if( msg.value > 3e18  ) {
-            msg.sender.transfer( msg.value.sub( 3e18 ) );
+        // send to msg.sender, not to recipient if value > maxcap
+        if( msg.value > maxcap  ) {
+            msg.sender.transfer( msg.value.sub( maxcap ) );
         }
 
         // send payment to wallet
         sendETHToMultiSig( msg.value );
         raisedWei = raisedWei.add( msg.value );
-        // 1ETH = 2500 BBO
-        uint recievedTokens = msg.value.mul( 2500 );
+        // 1ETH = 20000 BBO
+        uint recievedTokens = msg.value.mul( 20000 );
         // TODO bounce
-        uint bonus = getBonus(recievedTokens);
+        uint bonus = getBonus(recievedTokens, msg.value);
         recievedTokens = recievedTokens.add(bonus);
         assert( token.transfer( recipient, recievedTokens ) );
         //

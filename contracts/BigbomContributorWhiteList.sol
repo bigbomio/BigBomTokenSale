@@ -3,39 +3,35 @@ pragma solidity ^0.4.19;
 import './zeppelin/ownership/Ownable.sol';
 
 contract BigbomContributorWhiteList is Ownable {
-    // cap is in wei. The value of 11 is just a stub.
-    // after kyc registration ends, we change it to the actual value with setSlackUsersCap
-    uint public slackUsersCap = 11;
     mapping(address=>uint) public addressMinCap;
+    mapping(address=>uint) public addressMaxCap;
 
     function BigbomContributorWhiteList() {}
 
-    event ListAddress( address _user, uint _cap, uint _time );
+    event ListAddress( address _user, uint _mincap, uint _maxcap, uint _time );
 
     // Owner can delist by setting cap = 0.
     // Onwer can also change it at any time
-    function listAddress( address _user, uint _cap ) onlyOwner {
-        addressMinCap[_user] = _cap;
-        ListAddress( _user, _cap, now );
+    function listAddress( address _user, uint _mincap, uint _maxcap ) onlyOwner {
+        addressMinCap[_user] = _mincap;
+        addressMaxCap[_user] = _maxcap;
+        ListAddress( _user, _mincap, _maxcap, now );
     }
 
     // an optimization in case of network congestion
-    function listAddresses( address[] _users, uint[] _cap ) onlyOwner {
-        require(_users.length == _cap.length );
+    function listAddresses( address[] _users, uint[] _mincap, uint[] _maxcap ) onlyOwner {
+        require(_users.length == _mincap.length );
+        require(_users.length == _maxcap.length );
         for( uint i = 0 ; i < _users.length ; i++ ) {
-            listAddress( _users[i], _cap[i] );
+            listAddress( _users[i], _mincap[i], _maxcap[i] );
         }
     }
 
-    function setSlackUsersCap( uint _cap ) onlyOwner {
-        slackUsersCap = _cap;
+    function getMinCap( address _user ) constant returns(uint) {
+        return addressMinCap[_user];
     }
-
-    function getCap( address _user ) constant returns(uint) {
-        uint cap = addressMinCap[_user];
-
-        if( cap == 1 ) return slackUsersCap;
-        else return cap;
+    function getMaxCap( address _user ) constant returns(uint) {
+        return addressMaxCap[_user];
     }
 
     function destroy() onlyOwner {

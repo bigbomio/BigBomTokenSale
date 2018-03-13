@@ -3,8 +3,6 @@ pragma solidity ^0.4.19;
 import './zeppelin/ownership/Ownable.sol';
 
 contract BigbomPrivateSaleList is Ownable {
-    // amount is in wei. The value of 11 is just a stub.
-    uint public usersAmount = 11;
     mapping(address=>uint) public addressCap;
 
     function BigbomPrivateSaleList() {}
@@ -26,15 +24,10 @@ contract BigbomPrivateSaleList is Ownable {
         }
     }
 
-    function setUsersAmount( uint _amount ) onlyOwner {
-        usersAmount = _amount;
-    }
+  
 
     function getCap( address _user ) constant returns(uint) {
-        uint cap = addressCap[_user];
-
-        if( cap == 1 ) return usersAmount;
-        else return cap;
+        return addressCap[_user];
     }
 
     function destroy() onlyOwner {

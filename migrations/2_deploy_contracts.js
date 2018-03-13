@@ -18,38 +18,56 @@ module.exports = function(deployer) {
     var multisig = "0xceFC2e92cD266Df7672D20D0e00Cf78aaf2f060f";
     var whiteListInstance;
     var bbtokenInstance;
-    var premintedSupply = web3.toWei( 1000000000, "ether");
-    var publicSaleStartTime = new Date('Thu, 08 Mar 2018 07:00:00 GMT').getUnixTime();
-    var publicSaleEndTime = new Date('Mon, 12 Mar 2018 07:00:00 GMT').getUnixTime();
+    var premintedSupply = web3.toWei( 1675000000, "ether");
+    var publicSaleStartTime = new Date('Wed, 14 Mar 2018 00:00:00 GMT').getUnixTime();
+    var publicSaleEndTime = new Date('Mon, 19 Mar 2018 00:00:00 GMT').getUnixTime();
+    var publicSaleEndTime7Plus = new Date('Wed, 21 Mar 2018 00:00:00 GMT').getUnixTime();
+    console.log(publicSaleStartTime);
+    console.log(publicSaleEndTime);
+    console.log(publicSaleEndTime7Plus);
     var founderAmount = web3.toWei( 200000000, "ether");
 	var coreStaffAmount = web3.toWei( 60000000, "ether");
     var advisorAmount = web3.toWei( 140000000, "ether");
     var reserveAmount = web3.toWei( 330000000, "ether"); 
     var bountyAmount = web3.toWei( 40000000, "ether");
-
+    var privateList;
+    var tokenBBO;
 
 
 
     return WhiteList.new().then(function(instance){
         whiteListInstance = instance;
-        return whiteListInstance.listAddress("0x4e6b0ea30f13ff8a1ad799f70fd18947de575e5d", web3.toWei( 1000, "ether")); // list as slack user
+        return whiteListInstance.listAddress("0x4e6b0ea30f13ff8a1ad799f70fd18947de575e5d", web3.toWei( 100, "ether"), web3.toWei( 1000, "ether")); 
     }).then(function(){
     	
-         return TokenSale.new( admin,
-                                    multisig,
-                                    whiteListInstance.address,
-                                    premintedSupply,
-                                    publicSaleStartTime,
-                                    publicSaleEndTime,
-                                    founderAmount, 
+
+        return BBToken.new(publicSaleStartTime ,
+                                publicSaleEndTime7Plus,
+                                admin,
+                                founderAmount, 
                                 coreStaffAmount,
                                 advisorAmount, 
                                 reserveAmount, 
                                 bountyAmount 
                                   );
-                                  
+    }).then(function(token){
+        tokenBBO = token;
+        tokenBBO.transfer( multisig, premintedSupply );
+        
+        
+        return PrivateList.new();
+    }).then(function(privateList){
+        tokenBBO.freezeAccount(multisig, true);
+        tokenBBO.setPrivateList(privateList.address); 
+
+        return TokenSale.new( admin,
+                                    multisig,
+                                    whiteListInstance.address,
+                                    publicSaleStartTime,
+                                    publicSaleEndTime);                     
     }).then(function(result){
         tokenSaleContract = result;
+        tokenBBO.transfer( tokenSaleContract.address,  web3.toWei( 300000000, "ether") );
     });
 
 };
