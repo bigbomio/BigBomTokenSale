@@ -3,16 +3,12 @@ var Helpers = require('./../helpers.js');
 
 var listContract;
 
-
-var slackCapCode = web3.toWei(1, 'ether');
-
-
 var addresses = [ "0xdC119369eD73F30cDA5A7F3Ce26728a55D90fe44",
                   "0x42F13591F8Ec5104D5541540caEca790fDaF6e30",
                   "0x4E6B0EA30F13FF8A1aD799f70fd18947De575e5d",
                   "0x6D58F2848156A8B3Bd18cB9Ce4392a876E558eC9" ];
 
-var caps = [ slackCapCode, web3.toWei(10, 'ether'), web3.toWei(11, 'ether'), web3.toWei(0, 'ether')];
+var caps = [ web3.toWei(1, 'ether'), web3.toWei(10, 'ether'), web3.toWei(11, 'ether'), web3.toWei(0, 'ether')];
 
 var owner;
 var nonOwner;
