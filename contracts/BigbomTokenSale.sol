@@ -79,6 +79,36 @@ contract BigbomTokenSale {
     // }
 
 
+    function getBonusTest(uint _tokens, uint _amountInWei) returns (uint){
+        if (now > openSaleStartTime && now <= (openSaleStartTime+3 days)){
+            if (_amountInWei >= 1*1e18 && _amountInWei < 3 * 1e18){
+                return  _tokens.mul(45).div(100);
+            }
+            if (_amountInWei >= 3*1e18 && _amountInWei < 5 * 1e18){
+                return  _tokens.mul(50).div(100);
+            }
+            if (_amountInWei >= 5*1e18 && _amountInWei < 10 * 1e18){
+                return  _tokens.mul(60).div(100);
+            }
+            if (_amountInWei >= 10*1e18 && _amountInWei <= 30 * 1e18){
+                return  _tokens.mul(65).div(100);
+            }
+            return _tokens.mul(25).div(100);
+        }else if (now > (openSaleStartTime+3  days) && now <= (openSaleStartTime+16 days)){
+            return _tokens.mul(25).div(100);
+        }else if (now > (openSaleStartTime+16 days) && now <= (openSaleStartTime+27 days)){
+            return _tokens.mul(15).div(100);
+        }else if (now > (openSaleStartTime+27 days) && now <= (openSaleStartTime+37 days)){
+            return _tokens.mul(10).div(100);
+        }else if (now > (openSaleStartTime+37 days) && now <= (openSaleStartTime+47 days)){
+            return _tokens.mul(5).div(100);
+        }else if (now > (openSaleStartTime+47 days) && now <= (openSaleStartTime+52 days)){
+            return _tokens.mul(3).div(100);
+        }else{
+            return 0;
+        }
+    }
+
     function getBonus(uint _tokens, uint _amountInWei) returns (uint){
         if (now > openSaleStartTime && now <= (openSaleStartTime+3 days)){
             if (_amountInWei >= 100*1e18 && _amountInWei < 300 * 1e18){
@@ -136,7 +166,9 @@ contract BigbomTokenSale {
         // 1ETH = 20000 BBO
         uint recievedTokens = msg.value.mul( 20000 );
         // TODO bounce
-        uint bonus = getBonus(recievedTokens, msg.value);
+        //uint bonus = getBonus(recievedTokens, msg.value);
+        uint bonus = getBonusTest(recievedTokens, msg.value);
+        
         recievedTokens = recievedTokens.add(bonus);
         assert( token.transfer( recipient, recievedTokens ) );
         //

@@ -164,7 +164,7 @@ contract('token contract', function(accounts) {
     var currentTime = web3.eth.getBlock('latest').timestamp;
 
     saleStartTime = currentTime - 3600; 
-    saleEndTime = saleStartTime + 24 * 60 * 60; // 24 hours sale
+    saleEndTime = currentTime; // 24 hours sale
 
     return Token.new(saleStartTime,saleEndTime, tokenAdmin,   founderAmount, 
                                 coreStaffAmount,
@@ -293,8 +293,8 @@ contract('token contract', function(accounts) {
         // check total supply
         return tokenContract.totalSupply();
     }).then(function(result){
-        assert.equal(result.valueOf(), (totalSupply.minus(value)).valueOf(), "unexpected balance");
-        totalSupply = totalSupply.minus(value);    
+        assert.equal(result.valueOf(),totalSupply - value, "unexpected balance");
+        totalSupply = totalSupply - value;    
     });
   });
 
@@ -312,25 +312,9 @@ contract('token contract', function(accounts) {
     return tokenContract.transfer(accounts[5], value, {from:tokenOwner});
   });
 
-  it("burn from", function() {
-    var value = 50*1e15;
-    return tokenContract.approve(accounts[3], value, {from:accounts[5]}).then(function(){
-        return tokenContract.burnFrom(accounts[5], value, {from:accounts[3]});
-    }).then(function(){
-        // check accounts[5] balance was reduced
-        return tokenContract.balanceOf(accounts[5]);
-    }).then(function(result){
-        assert.equal(result.valueOf(), 50*1e15, "unexpected balance");
-        
-        // check total supply was reduced
-        return tokenContract.totalSupply();
-    }).then(function(result){
-        assert.equal(result.valueOf(), totalSupply-50*1e15, "unexpected total supply");
-        totalSupply = totalSupply-50*1e15;
-    });
-  });
-
+  
   it("deploy another token and send it to token contract", function() {
+    totalSupply = 2000000000 * 1e18
     tokenOwner = accounts[0];
     tokenAdmin = accounts[1];
     
