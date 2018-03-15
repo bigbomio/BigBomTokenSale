@@ -91,10 +91,15 @@ contract BigbomToken is StandardToken, Ownable {
         return super.transfer(_to, _value);
     }
 
+    function transferPrivateSale(address _to, uint _value)
+        onlyPrivateListEnabled(_to) 
+        returns (bool) {
+         return transfer( _to,  _value);
+    }
+
     function transferFrom(address _from, address _to, uint _value)
         onlyWhenTransferEnabled
         validDestination(_to)
-        onlyPrivateListEnabled(_to)
         returns (bool) {
         return super.transferFrom(_from, _to, _value);
     }

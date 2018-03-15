@@ -19,12 +19,18 @@ module.exports = function(deployer) {
     var whiteListInstance;
     var bbtokenInstance;
     var premintedSupply = web3.toWei( 1675000000, "ether");
-    var publicSaleStartTime = new Date('Thu, 15 Mar 2018 00:00:00 GMT').getUnixTime();
+
+    var currentTime = web3.eth.getBlock('latest').timestamp;
+
+    var publicSaleStartTime = currentTime + 900;//after 15min
+
     var publicSaleEndTime = new Date('Mon, 19 Mar 2018 00:00:00 GMT').getUnixTime();
     var publicSaleEndTime7Plus = new Date('Wed, 21 Mar 2018 00:00:00 GMT').getUnixTime();
+
     console.log(publicSaleStartTime);
     console.log(publicSaleEndTime);
     console.log(publicSaleEndTime7Plus);
+    
     var founderAmount = web3.toWei( 200000000, "ether");
 	var coreStaffAmount = web3.toWei( 60000000, "ether");
     var advisorAmount = web3.toWei( 140000000, "ether");
@@ -73,9 +79,9 @@ module.exports = function(deployer) {
         
         
         console.log('TokenSale Contract: ', tokenSaleContract.address);
-
-        tokenBBO.transfer( tokenSaleContract.address,  web3.toWei( 300000000, "ether") );
         tokenBBO.setTokenSaleContract(tokenSaleContract.address);
+        tokenBBO.transfer( tokenSaleContract.address,  web3.toWei( 300000000, "ether") );
+        
         
     });
 
