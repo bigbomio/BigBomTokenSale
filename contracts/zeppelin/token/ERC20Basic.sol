@@ -11,7 +11,6 @@ contract ERC20Basic {
   function balanceOf(address who) constant returns (uint256);
   function transfer(address to, uint256 value) returns (bool);
   
-  // KYBER-NOTE! code changed to comply with ERC20 standard
   event Transfer(address indexed _from, address indexed _to, uint _value);
   //event Transfer(address indexed from, address indexed to, uint256 value);
 }

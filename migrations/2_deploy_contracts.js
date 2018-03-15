@@ -15,11 +15,11 @@ var tokenSaleContract;
 
 module.exports = function(deployer) {
     var admin = "0x4e6b0ea30f13ff8a1ad799f70fd18947de575e5d";
-    var multisig = "0xc65Db7D28f0af3b1DFcB3F48d36deD88C0d085d8";
+    var multisig = "0xceFC2e92cD266Df7672D20D0e00Cf78aaf2f060f";
     var whiteListInstance;
     var bbtokenInstance;
     var premintedSupply = web3.toWei( 1675000000, "ether");
-    var publicSaleStartTime = new Date('Wed, 14 Mar 2018 00:00:00 GMT').getUnixTime();
+    var publicSaleStartTime = new Date('Thu, 15 Mar 2018 00:00:00 GMT').getUnixTime();
     var publicSaleEndTime = new Date('Mon, 19 Mar 2018 00:00:00 GMT').getUnixTime();
     var publicSaleEndTime7Plus = new Date('Wed, 21 Mar 2018 00:00:00 GMT').getUnixTime();
     console.log(publicSaleStartTime);

@@ -29,7 +29,6 @@ contract StandardToken is ERC20, BasicToken {
     // Check is not needed because sub(_allowance, _value) will already throw if this condition is not met
     // require (_value <= _allowance);
 
-    // KYBER-NOTE! code changed to comply with ERC20 standard
     balances[_from] = balances[_from].sub(_value);
     balances[_to] = balances[_to].add(_value);
     //balances[_from] = balances[_from].sub(_value); // this was removed
