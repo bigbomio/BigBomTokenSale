@@ -85,17 +85,17 @@ contract('token sale', function(accounts) {
   });
 
   it("deploy white list", function() {
-    return WhiteList.new({from:accounts[3],gas:4700000}).then(function(instance){
+    return WhiteList.new({from:accounts[2],gas:4700000}).then(function(instance){
         whiteListContract = instance;
         return whiteListContract.listAddresses([accounts[0], accounts[1]],
-                                               [1e18, 10e18 ], [10e18, 20e18 ], {from:accounts[2]});
+                                               [1e18, 3*1e18 ], [10*1e18, 20*1e18 ], {from:accounts[2]});
     });
   });
 
   it("deploy token sale contract", function() {
     var currentTime = web3.eth.getBlock('latest').timestamp;
 
-    publicSaleStartTime = currentTime + 3600; // one hour from now
+    publicSaleStartTime = currentTime; 
     publicSaleEndTime = publicSaleStartTime + 15 * 3600;
     publicSaleEndTime7Plus = publicSaleEndTime + 7 * 3600;
     admin = accounts[2];
@@ -150,7 +150,32 @@ contract('token sale', function(accounts) {
     });
 });
 
+  it("buy with a 1ETH cap", function() {
+    return tokenSaleContract.buy(accounts[0],{from:accounts[0], value: web3.toWei(1, "ether")}).then(function(){
+        return tokenSaleContract.balanceOf(accounts[0]);
+    }).then(function(value){
+         assert.equal(value, 1e18 * ETHtoBBO + 1e18 * ETHtoBBO * 45/100 , "expected throw got " + error);
+    });
+  });
 
+  it("buy without a cap", function() {
+    return tokenSaleContract.buy(accounts[2],{from:accounts[2], value: web3.toWei(1, "ether")}).then(function(){
+        assert.fail("expected to throw");
+    }).catch(function(error){
+        assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
+    });
+  });
+
+  it("buy after full cap was used", function() {
+    return tokenSaleContract.buy(accounts[0],{from:accounts[0], value: web3.toWei(2, "ether")}).then(function(){
+       return tokenSaleContract.buy(accounts[0],{from:accounts[0], value: web3.toWei(2, "ether")})
+        
+    }).then(function(){
+      assert.fail("expected to throw");
+    }).catch(function(error){
+        assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
+    });
+  });
  
 
 });

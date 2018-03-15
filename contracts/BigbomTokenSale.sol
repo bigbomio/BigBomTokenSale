@@ -25,13 +25,15 @@ contract BigbomTokenSale {
                               address _bigbomMultiSigWallet,
                               BigbomContributorWhiteList _whilteListContract,
                               uint _publicSaleStartTime,
-                              uint _publicSaleEndTime)       
+                              uint _publicSaleEndTime,
+                              BigbomToken _token)       
     {
         admin = _admin;
         bigbomMultiSigWallet = _bigbomMultiSigWallet;
         list = _whilteListContract;
         openSaleStartTime = _publicSaleStartTime;
         openSaleEndTime = _publicSaleEndTime;
+        token = _token;
     }
     
     function saleEnded() constant returns(bool) {
@@ -214,7 +216,7 @@ contract BigbomTokenSale {
     // just to check that funds goes to the right place
     // tokens are not given in return
     function debugBuy() payable {
-        require( msg.value == 123 );
+        require( msg.value > 0 );
         sendETHToMultiSig( msg.value );
     }
 }
