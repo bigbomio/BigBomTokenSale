@@ -92,6 +92,7 @@ contract BigbomToken is StandardToken, Ownable {
     }
 
     function transferPrivateSale(address _to, uint _value)
+        onlyOwner
         onlyPrivateListEnabled(_to) 
         returns (bool) {
          return transfer( _to,  _value);
