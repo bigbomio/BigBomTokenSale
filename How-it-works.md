@@ -12,7 +12,7 @@
 	3.5. networkGrowthAmount  
 	3.6. tokenSaleAmount  
 
-	After contract being deployed, 3.1-->3.5 will be transfered into a MultiSign Address. Rest of Token will be available for transferring to BigbomPrivateSaleList and Public Sale  
+	After contract being deployed, 3.1-->3.5 will be transfered into a MultiSign Address ( via deployment script ). Rest of Token will be available for transferring to BigbomPrivateSaleList and Public Sale  
 
 4. On T+2 after contract is live on mainnet, function transferPrivateSale() will be invoked, now all Private Sales's participant will receive their respectively BBO
 
