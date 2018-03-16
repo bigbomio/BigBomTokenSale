@@ -34,7 +34,8 @@ module.exports = function(deployer) {
     var founderAmount = web3.toWei( 200000000, "ether");
 	var coreStaffAmount = web3.toWei( 60000000, "ether");
     var advisorAmount = web3.toWei( 140000000, "ether");
-    var reserveAmount = web3.toWei( 330000000, "ether"); 
+    var reserveAmount = web3.toWei( 635000000, "ether"); 
+    var networkGrowthAmount = web3.toWei( 600000000, "ether");
     var bountyAmount = web3.toWei( 40000000, "ether");
     var privateList;
     var tokenBBO;
@@ -50,12 +51,8 @@ module.exports = function(deployer) {
 
         return BBToken.new(publicSaleStartTime ,
                                 publicSaleEndTime7Plus,
-                                admin,
-                                founderAmount, 
-                                coreStaffAmount,
-                                advisorAmount, 
-                                reserveAmount, 
-                                bountyAmount 
+                                admin
+                               
                                   );
     }).then(function(token){
         tokenBBO = token;

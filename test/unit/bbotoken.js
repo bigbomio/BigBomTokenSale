@@ -14,11 +14,7 @@ var tokenOwnerAccount;
 var nonOwnerAccount;
 
 var totalSupply = 2000000000 * 1e18;
-var founderAmount = web3.toWei( 200000000, "ether");
-var coreStaffAmount = web3.toWei( 60000000, "ether");
-var advisorAmount = web3.toWei( 140000000, "ether");
-var reserveAmount = web3.toWei( 330000000, "ether"); 
-var bountyAmount = web3.toWei( 40000000, "ether");
+
 
 var erc20TokenContract;
 
@@ -43,11 +39,7 @@ contract('token contract', function(accounts) {
     saleStartTime = currentTime + 3600; // 1 hour from now
     saleEndTime = saleStartTime + 24 * 60 * 60; // 24 hours sale
 
-    return Token.new(saleStartTime,saleEndTime, tokenAdmin,   founderAmount, 
-                                coreStaffAmount,
-                                advisorAmount, 
-                                reserveAmount, 
-                                bountyAmount ,{from: tokenOwner}).then(function(result){
+    return Token.new(saleStartTime,saleEndTime, tokenAdmin,{from: tokenOwner}).then(function(result){
         tokenContract = result;
         
         // check total supply
@@ -84,11 +76,7 @@ contract('token contract', function(accounts) {
     saleStartTime = currentTime; 
     saleEndTime = saleStartTime + 24 * 60 * 60; // 24 hours sale
 
-    return Token.new(saleStartTime,saleEndTime, tokenAdmin,   founderAmount, 
-                                coreStaffAmount,
-                                advisorAmount, 
-                                reserveAmount, 
-                                bountyAmount ,{from: tokenOwner}).then(function(result){
+    return Token.new(saleStartTime,saleEndTime, tokenAdmin,  {from: tokenOwner}).then(function(result){
         tokenContract = result;
         
         // check total supply
@@ -166,11 +154,7 @@ contract('token contract', function(accounts) {
     saleStartTime = currentTime - 3600; 
     saleEndTime = currentTime; // 24 hours sale
 
-    return Token.new(saleStartTime,saleEndTime, tokenAdmin,   founderAmount, 
-                                coreStaffAmount,
-                                advisorAmount, 
-                                reserveAmount, 
-                                bountyAmount ,{from: tokenOwner}).then(function(result){
+    return Token.new(saleStartTime,saleEndTime, tokenAdmin,  {from: tokenOwner}).then(function(result){
         tokenContract = result;
         
         // check total supply
@@ -323,11 +307,7 @@ contract('token contract', function(accounts) {
     saleStartTime = currentTime + 3600; // 1 hour from now
     saleEndTime = saleStartTime + 24 * 60 * 60; // 24 hours sale
 
-    return Token.new(saleStartTime,saleEndTime, tokenAdmin,   founderAmount, 
-                                coreStaffAmount,
-                                advisorAmount, 
-                                reserveAmount, 
-                                bountyAmount, {from: tokenOwner}).then(function(result){
+    return Token.new(saleStartTime,saleEndTime, tokenAdmin,  {from: tokenOwner}).then(function(result){
         tokenContract = result;
         
         // check total supply
@@ -354,11 +334,7 @@ contract('token contract', function(accounts) {
     saleStartTime = currentTime + 3600; // 1 hour from now
     saleEndTime = saleStartTime + 24 * 60 * 60; // 24 hours sale
 
-    return Token.new(saleStartTime,saleEndTime, tokenAdmin,   founderAmount, 
-                                coreStaffAmount,
-                                advisorAmount, 
-                                reserveAmount, 
-                                bountyAmount, {from: accounts[5]}).then(function(result){
+    return Token.new(saleStartTime,saleEndTime, tokenAdmin,   {from: accounts[5]}).then(function(result){
         erc20TokenContract = result;
         return erc20TokenContract.transfer(tokenContract.address,1e15,{from:accounts[5]});
     }).then(function(){
