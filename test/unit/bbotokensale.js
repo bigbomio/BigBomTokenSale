@@ -103,12 +103,8 @@ contract('token sale', function(accounts) {
     
     return Token.new(publicSaleStartTime ,
                                 publicSaleEndTime7Plus,
-                                admin,
-                                founderAmount, 
-                                coreStaffAmount,
-                                advisorAmount, 
-                                reserveAmount, 
-                                bountyAmount 
+                                admin
+                                 
                                   ).then(function(token){
         tokenContract = token;
         console.log('tokenContract Contract: ', tokenContract.address);

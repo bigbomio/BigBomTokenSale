@@ -51,13 +51,8 @@ module.exports = function(deployer) {
 
         return BBToken.new(publicSaleStartTime ,
                                 publicSaleEndTime7Plus,
-                                admin,
-                                founderAmount, 
-                                coreStaffAmount,
-                                advisorAmount, 
-                                reserveAmount,
-                                networkGrowthAmount, 
-                                bountyAmount 
+                                admin
+                               
                                   );
     }).then(function(token){
         tokenBBO = token;

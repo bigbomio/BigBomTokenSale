@@ -11,12 +11,12 @@ contract BigbomToken is StandardToken, Ownable {
     uint    public  constant decimals = 18;
     uint    public   totalSupply = 2000000000 * 1e18; //2,000,000,000
 
-    uint    public  founderAmount; // 200,000,000
-    uint    public  coreStaffAmount; // 60,000,000
-    uint    public  advisorAmount; // 140,000,000
-    uint    public  networkGrowthAmount; //600,000,000
-    uint    public  reserveAmount; // 635,000,000
-    uint    public  bountyAmount; // 40,000,000
+    uint    public  founderAmount = 200000000 * 1e18; // 200,000,000
+    uint    public  coreStaffAmount = 60000000 * 1e18; // 60,000,000
+    uint    public  advisorAmount = 140000000 * 1e18; // 140,000,000
+    uint    public  networkGrowthAmount = 600000000 * 1e18; //600,000,000
+    uint    public  reserveAmount = 635000000 * 1e18; // 635,000,000
+    uint    public  bountyAmount = 40000000 * 1e18; // 40,000,000
 
     uint    public  saleStartTime;
     uint    public  saleEndTime;
@@ -63,18 +63,13 @@ contract BigbomToken is StandardToken, Ownable {
                 privateSaleList = _privateSaleList;
 
     }
-    function BigbomToken(uint startTime, uint endTime, address admin, uint _founderAmount, uint _coreStaffAmount, uint _advisorAmount,
-     uint _reserveAmount, uint _bountyAmount) {
+    function BigbomToken(uint startTime, uint endTime, address admin
+        ) {
         // Mint all tokens. Then disable minting forever.
         balances[msg.sender] = totalSupply;
         Transfer(address(0x0), msg.sender, totalSupply);
         // init internal amount limit
-        founderAmount = _founderAmount;
-        coreStaffAmount = _coreStaffAmount;
-        advisorAmount = _advisorAmount;
-        reserveAmount = _reserveAmount;
-        networkGrowthAmount = _networkGrowthAmount;
-        bountyAmount  = _bountyAmount;
+       
         saleStartTime = startTime;
         saleEndTime = endTime;
         tokenSaleContract = msg.sender;
