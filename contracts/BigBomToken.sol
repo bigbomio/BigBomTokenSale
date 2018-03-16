@@ -54,10 +54,9 @@ contract BigbomToken is StandardToken, Ownable {
         _;
     }
     modifier onlyPrivateListEnabled(address _to){
-        if(now <= saleStartTime){
-            uint allowcap = privateSaleList.getCap(_to);
-            require (allowcap > 0);
-        }
+        require(now <= saleStartTime);
+        uint allowcap = privateSaleList.getCap(_to);
+        require (allowcap > 0);
         _;
     }
     function setPrivateList(BigbomPrivateSaleList _privateSaleList) onlyOwner {
