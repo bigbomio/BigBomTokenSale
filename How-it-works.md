@@ -20,7 +20,7 @@
 
 1. Before ICO starts, BigbomContributorWhiteList will be deployed. This will contains addresses that passed KYC. Each address will have a min and max cap during ICO phase.  
 2. During ICO, there will be several bonus level. Details as below  
-	2.1. From T to T+3 days, each address will receive bonus depeneds on how much they contribute per transaction. Each transaction must not greater than their max cap, and must not lesser than their min cap describing in  BigbomContributorWhiteList. 
+	2.1. From T to T+3 days, each address will receive bonus depeneds on how much they contribute per transaction. Each transaction must not greater than their max cap, and must not lesser than their min cap describing in  BigbomContributorWhiteList.
 	2.2. From T+3 to T+51 days, each deposit will receive different bonus depends on the time they deposit. Function getBonus() will take care this calculation.  
 	All Tokens is not transferable during Token Sale
 3. After ICO Ends, FinalizeSale() will be invoked, rest of Token in Token Contract will be burnt. 
@@ -32,4 +32,4 @@ Before running unit test, make sure you completed following steps:
 
 Running these commands for unittest
 npm install -g truffle
-truffle compile && truffle migrate && truffle test
+truffle migrate && truffle test
