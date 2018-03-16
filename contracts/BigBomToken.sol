@@ -13,9 +13,10 @@ contract BigbomToken is StandardToken, Ownable {
 
     uint    public  founderAmount; // 200,000,000
     uint    public  coreStaffAmount; // 60,000,000
-    uint    public  advisorAmount; // 100,000,000
-    uint    public  reserveAmount; // 500,000,000
-    uint    public  bountyAmount; //
+    uint    public  advisorAmount; // 140,000,000
+    uint    public  networkGrowthAmount; //600,000,000
+    uint    public  reserveAmount; // 635,000,000
+    uint    public  bountyAmount; // 40,000,000
 
     uint    public  saleStartTime;
     uint    public  saleEndTime;
@@ -73,6 +74,7 @@ contract BigbomToken is StandardToken, Ownable {
         coreStaffAmount = _coreStaffAmount;
         advisorAmount = _advisorAmount;
         reserveAmount = _reserveAmount;
+        networkGrowthAmount = _networkGrowthAmount;
         bountyAmount  = _bountyAmount;
         saleStartTime = startTime;
         saleEndTime = endTime;
