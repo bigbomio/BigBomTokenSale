@@ -25,4 +25,11 @@
 	All Tokens is not transferable during Token Sale
 3. After ICO Ends, FinalizeSale() will be invoked, rest of Token in Token Contract will be burnt. 
 
+# TESTING
+Before running unit test, make sure you completed following steps:
+1. Edit truffle.js, change IP address, account and password of your test node
+2. Has 6 unlocked account in your test node, each account has at least 5ETH.
 
+Running these commands for unittest
+npm install -g truffle
+truffle compile && truffle migrate && truffle test
