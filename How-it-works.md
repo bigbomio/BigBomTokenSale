@@ -3,8 +3,8 @@
 # BBO TOKEN CONTRACT
 
 1. Fixed total supply is 2,000,000,000 Token
-2. Before deploy contract, BigbomPrivateSaleList needs to be deployed first. This is a list of addresses that is participated in previous Private Sales campaign. Each address will have a fixed amount BBO they're expecting to receive once BBO Token is available.\
-3. There are 6 major part after BBO is being generated at the first time
+2. Before deploy contract, BigbomPrivateSaleList needs to be deployed first. This is a list of addresses that is participated in previous Private Sales campaign. Each address will have a fixed amount BBO they're expecting to receive once BBO Token is available.
+3. There are 6 major part after BBO is being generated at the first time\
 	3.1. founderAmount\
 	3.2. coreStaffAmount\
 	3.3. advisorAmount\
@@ -22,7 +22,7 @@
 2. During ICO, there will be several bonus level. Details as below\
 	2.1. From T to T+3 days, each address will receive bonus depeneds on how much they contribute per transaction. Each transaction must not greater than their max cap, and must not lesser than their min cap describing in BigbomContributorWhiteList\
 	2.2. Friom T+3 to T+51 days, each deposit will receive different bonus depends on the time they deposit. Function getBonus() will take care this calculation\
-	All Tokens is not transferable during Token Sale\
+	All Tokens is not transferable during Token Sale
 3. After ICO Ends, FinalizeSale() will be invoked, rest of Token in Token Contract will be burnt
 
 # TESTING
