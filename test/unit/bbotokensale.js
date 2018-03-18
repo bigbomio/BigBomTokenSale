@@ -159,11 +159,18 @@ contract('token sale', function(accounts) {
   });
 
   it("buy with a 1ETH cap", function() {
-    return tokenSaleContract.buy(accounts[0],{from:accounts[0], value: web3.toWei(1, "ether")}).then(function(){
+    return whiteListContract.listAddress(accounts[0],1e18, 3e18, {from:accounts[2]})
+    .then(function(result){
+      return whiteListContract.getMinCap(accounts[0],  {from:accounts[2]});
+    }).then(function(mincap){
+      console.log('mincap', mincap.valueOf())
+    return tokenSaleContract.buy(accounts[0],{from:accounts[0], value: web3.toWei(1, "ether")})
+    }).then(function(){
         console.log('di');
         return tokenContract.balanceOf(accounts[0]);
     }).then(function(value){
-         assert.equal(value, 1e18 * ETHtoBBO + 1e18 * ETHtoBBO * 45/100 , "expected throw got " + error);
+       console.log('di', value.valueOf());
+         assert.equal(value.valueOf(), 2.5e22 , "expected throw got " +value.valueOf());
     });
   });
 
@@ -176,7 +183,7 @@ contract('token sale', function(accounts) {
   });
 
   it("buy after full cap was used", function() {
-    return tokenSaleContract.buy(accounts[0],{from:accounts[0], value: web3.toWei(2, "ether")}).then(function(){
+    return tokenSaleContract.buy(accounts[0],{from:accounts[0], value: web3.toWei(20, "ether")}).then(function(){
        return tokenSaleContract.buy(accounts[0],{from:accounts[0], value: web3.toWei(2, "ether")})
         
     }).then(function(){

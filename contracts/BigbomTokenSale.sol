@@ -113,7 +113,7 @@ contract BigbomTokenSale {
 
     event Buy( address _buyer, uint _tokens, uint _payedWei, uint _bonus );
     function buy( address recipient ) payable returns(uint){
-        require( tx.gasprice <= 50000000000 wei );
+        //require( tx.gasprice <= 50000000000 wei );
 
         require( ! haltSale );
         require( saleStarted() );
