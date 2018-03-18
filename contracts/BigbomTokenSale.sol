@@ -61,7 +61,7 @@ contract BigbomTokenSale {
         else return remainedCap;
     }
 
-    function checkMaxCap( address contributor, uint amountInWei ) constant returns(uint) {
+    function checkMaxCap( address contributor, uint amountInWei ) internal returns(uint) {
         uint result = contributorMaxCap( contributor, amountInWei );
         participated[contributor] = participated[contributor].add( result );
         return result;

@@ -10,7 +10,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "truffle": "^3.4.11",
+    "truffle": "^4.1.3",
     "zeppelin-solidity": "^1.2.0"
   },
   "devDependencies": {

@@ -97,6 +97,7 @@ contract BigbomToken is StandardToken, Ownable {
     function transferFrom(address _from, address _to, uint _value)
         onlyWhenTransferEnabled
         validDestination(_to)
+        validFrom(_from)
         returns (bool) {
         return super.transferFrom(_from, _to, _value);
     }
