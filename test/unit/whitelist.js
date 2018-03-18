@@ -6,10 +6,6 @@ var listContract;
 
 
 
-var addresses = [ "0xdC119369eD73F30cDA5A7F3Ce26728a55D90fe44",
-                  "0x42F13591F8Ec5104D5541540caEca790fDaF6e30",
-                  "0x4E6B0EA30F13FF8A1aD799f70fd18947De575e5d",
-                  "0x6D58F2848156A8B3Bd18cB9Ce4392a876E558eC9" ];
 
 var caps = [ web3.toWei(1, 'ether'), web3.toWei(10, 'ether'), web3.toWei(11, 'ether'), web3.toWei(0, 'ether')];
 var maxcaps = [ web3.toWei(1, 'ether'), web3.toWei(100, 'ether'), web3.toWei(110, 'ether'), web3.toWei(0, 'ether')];
@@ -23,6 +19,7 @@ var nonOwner;
 
 
 contract('contributor white list', function(accounts) {
+var addresses = [ accounts[0],accounts[1],accounts[2],accounts[3]];
 
   beforeEach(function(done){
     done();
@@ -47,7 +44,7 @@ contract('contributor white list', function(accounts) {
         assert.fail("set cap should fail");
     }).catch(function(error){
         assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
-        reject(error);
+
         // check that value was not set
         return listContract.owner();
     }).then(function(result){
@@ -91,20 +88,20 @@ contract('contributor white list', function(accounts) {
   });
 
   it("list array from non owner", function() {
-    return listContract.listAddresses(addresses,caps,{from:nonOwner}).then(function(){
+    return listContract.listAddresses(addresses,caps, caps,{from:nonOwner}).then(function(){
         assert.fail("expected to fail");
     }).catch(function(error){
         assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
-        reject(error);
+
     });
   });
 
   it("list single from non owner", function() {
-    return listContract.listAddress(addresses[1],caps[1],{from:nonOwner}).then(function(){
+    return listContract.listAddress(addresses[1],caps[1],caps[1],{from:nonOwner}).then(function(){
         assert.fail("expected to fail");
     }).catch(function(error){
         assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
-        reject(error);
+
     });
   });
 
@@ -113,7 +110,7 @@ contract('contributor white list', function(accounts) {
         assert.fail("expected to fail");
     }).catch(function(error){
         assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
-        reject(error);
+
     });
   });
 

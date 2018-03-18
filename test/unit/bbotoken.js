@@ -51,7 +51,7 @@ contract('token contract', function(accounts) {
         // check that owner gets all supply
         return tokenContract.balanceOf(tokenOwner);
     }).then(function(result){
-        assert.equal(result, totalSupply, "unexpected owner balance");
+        assert.equal(result.valueOf(), totalSupply.valueOf(), "unexpected owner balance");
     });
   });
   
@@ -61,10 +61,10 @@ contract('token contract', function(accounts) {
         // get balances
         return tokenContract.balanceOf(tokenOwner);
       }).then(function(result){
-        assert.equal(result.valueOf(), totalSupply - value, "unexpected balance");
+        assert.equal(result.valueOf(), totalSupply - value, "unexpected balance 1");
         return tokenContract.balanceOf(accounts[2]);
       }).then(function(result){
-        assert.equal(result.valueOf(), value.valueOf(), "unexpected balance");    
+        assert.equal(result.valueOf(), value.valueOf(), "unexpected balance 2");    
       });
   });
   it("deploy token get open sale", function() {
@@ -328,7 +328,7 @@ contract('token contract', function(accounts) {
     return Helpers.sendPromise( 'evm_mine', [] );
   });
 
-  it("deploy token and init accounts", function() {
+  it("deploy token and init accounts 2", function() {
     var currentTime = web3.eth.getBlock('latest').timestamp;
 
     saleStartTime = currentTime + 3600; // 1 hour from now

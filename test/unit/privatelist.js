@@ -3,10 +3,8 @@ var Helpers = require('./../helpers.js');
 
 var listContract;
 
-var addresses = [ "0xdC119369eD73F30cDA5A7F3Ce26728a55D90fe44",
-                  "0x42F13591F8Ec5104D5541540caEca790fDaF6e30",
-                  "0x4E6B0EA30F13FF8A1aD799f70fd18947De575e5d",
-                  "0x6D58F2848156A8B3Bd18cB9Ce4392a876E558eC9" ];
+
+
 
 var caps = [ web3.toWei(1, 'ether'), web3.toWei(10, 'ether'), web3.toWei(11, 'ether'), web3.toWei(0, 'ether')];
 
@@ -19,7 +17,7 @@ var nonOwner;
 
 
 contract('private list', function(accounts) {
-
+var addresses = [ accounts[0],accounts[1],accounts[2],accounts[3]];
   beforeEach(function(done){
     done();
   });
@@ -43,7 +41,7 @@ contract('private list', function(accounts) {
         assert.fail("set cap should fail");
     }).catch(function(error){
         assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
-        reject(error);
+
         // check that value was not set
         return listContract.owner();
     }).then(function(result){
@@ -91,7 +89,7 @@ contract('private list', function(accounts) {
         assert.fail("expected to fail");
     }).catch(function(error){
         assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
-        reject(error);
+
     });
   });
 
@@ -100,7 +98,7 @@ contract('private list', function(accounts) {
         assert.fail("expected to fail");
     }).catch(function(error){
         assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
-        reject(error);
+
     });
   });
 
@@ -109,7 +107,7 @@ contract('private list', function(accounts) {
         assert.fail("expected to fail");
     }).catch(function(error){
         assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
-        reject(error);
+
     });
   });
 

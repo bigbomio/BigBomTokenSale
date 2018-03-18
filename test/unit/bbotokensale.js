@@ -2,7 +2,6 @@ var WhiteList = artifacts.require("./BigbomContributorWhiteList.sol");
 var TokenSale = artifacts.require("./BigbomTokenSale.sol");
 var Token = artifacts.require("./BigBomToken.sol");
 var PrivateList = artifacts.require("./BigbomPrivateSaleList.sol");
-var Kill = artifacts.require("./mock/Killable.sol");
 var Helpers = require('./../helpers.js');
 
 var founderAmount = web3.toWei( 200000000, "ether");
@@ -95,7 +94,7 @@ contract('token sale', function(accounts) {
   it("deploy token sale contract", function() {
     var currentTime = web3.eth.getBlock('latest').timestamp;
 
-    publicSaleStartTime = currentTime; 
+    publicSaleStartTime = currentTime + 100; 
     publicSaleEndTime = publicSaleStartTime + 15 * 3600;
     publicSaleEndTime7Plus = publicSaleEndTime + 7 * 3600;
     admin = accounts[2];
@@ -103,35 +102,39 @@ contract('token sale', function(accounts) {
     
     return Token.new(publicSaleStartTime ,
                                 publicSaleEndTime7Plus,
-                                admin
-                                 
-                                  ).then(function(token){
+                                admin, {from:accounts[2]} ).then(function(token){
         tokenContract = token;
         console.log('tokenContract Contract: ', tokenContract.address);
-        tokenContract.transfer( multisig, premintedSupply );
+        tokenContract.transfer( multisig, premintedSupply , {from:accounts[2]});
         
         return PrivateList.new();
     }).then(function(privateList){
         console.log('PrivateList Contract: ', privateList.address);
         privateListContract = privateList;
-        tokenContract.freezeAccount(multisig, true);
-        tokenContract.setPrivateList(privateList.address); 
+        tokenContract.freezeAccount(multisig, true, {from:accounts[2]});
+
+        tokenContract.setPrivateList(privateList.address, {from:accounts[2]}); 
 
         return TokenSale.new( admin,
                                     multisig,
                                     whiteListContract.address,
                                     publicSaleStartTime,
-                                    publicSaleEndTime);                     
+                                    publicSaleEndTime,
+                                    tokenContract.address, {from:accounts[2]});                     
     }).then(function(result){
         tokenSaleContract = result;
         
         
         
         console.log('TokenSale Contract: ', tokenSaleContract.address);
+        return tokenContract.setTokenSaleContract(tokenSaleContract.address, {from:accounts[2]});
+      }).then(function(result){
 
-        return tokenContract.transfer( tokenSaleContract.address,  web3.toWei( 300000000, "ether") );
+        console.log('setTokenSaleContract ', tokenSaleContract.address);
+        return tokenContract.transfer( tokenSaleContract.address,  web3.toWei( 300000000, "ether") , {from:accounts[2]});
         
     }).then(function(result){
+
         return tokenContract.balanceOf(tokenSaleContract.address);
     }).then(function(result){
         assert.equal( result.valueOf(), 3e26, "unexpected contract balance");
@@ -145,10 +148,20 @@ contract('token sale', function(accounts) {
         multisigEthBalance = result;
     });
 });
+  it("fast forward to token sale", function() {
+    var fastForwardTime = publicSaleStartTime - web3.eth.getBlock('latest').timestamp + 1;
+    return Helpers.sendPromise( 'evm_increaseTime', [fastForwardTime] ).then(function(){
+        return Helpers.sendPromise( 'evm_mine', [] ).then(function(){
+            var currentTime = web3.eth.getBlock('latest').timestamp;
+            if( currentTime <= publicSaleStartTime ) assert.fail( "current time is not as expected" );
+        });
+    });
+  });
 
   it("buy with a 1ETH cap", function() {
     return tokenSaleContract.buy(accounts[0],{from:accounts[0], value: web3.toWei(1, "ether")}).then(function(){
-        return tokenSaleContract.balanceOf(accounts[0]);
+        console.log('di');
+        return tokenContract.balanceOf(accounts[0]);
     }).then(function(value){
          assert.equal(value, 1e18 * ETHtoBBO + 1e18 * ETHtoBBO * 45/100 , "expected throw got " + error);
     });
