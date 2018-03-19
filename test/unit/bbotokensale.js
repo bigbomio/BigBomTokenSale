@@ -95,7 +95,7 @@ contract('token sale', function(accounts) {
     var currentTime = web3.eth.getBlock('latest').timestamp;
 
     publicSaleStartTime = currentTime + 100; 
-    publicSaleEndTime = publicSaleStartTime + 15 * 3600;
+    publicSaleEndTime = publicSaleStartTime + 52 * 24 * 3600;
     publicSaleEndTime7Plus = publicSaleEndTime + 7 * 3600;
     admin = accounts[2];
     multisig = accounts[4];
@@ -173,6 +173,123 @@ contract('token sale', function(accounts) {
          assert.equal(value.valueOf(), 2.5e22 , "expected throw got " +value.valueOf());
     });
   });
+  it("buy with a 100ETH cap", function() {
+    return whiteListContract.listAddress(accounts[9],100e18, 300e18, {from:accounts[2]})
+    .then(function(result){
+      return whiteListContract.getMinCap(accounts[9],  {from:accounts[2]});
+    }).then(function(mincap){
+      console.log('mincap', mincap.valueOf())
+    return tokenSaleContract.buy(accounts[9],{from:accounts[9], value: web3.toWei(100, "ether")})
+    }).then(function(){
+        console.log('di');
+        return tokenContract.balanceOf(accounts[9]);
+    }).then(function(value){
+       console.log('di', value.valueOf());
+         assert.equal(value.valueOf(), 20000*100*1e18 + 20000*45*1e18 , "expected throw got " +value.valueOf());
+    });
+  });
+  it("buy with a 300ETH cap", function() {
+    return whiteListContract.listAddress(accounts[8],300e18, 500e18, {from:accounts[2]})
+    .then(function(result){
+      return whiteListContract.getMinCap(accounts[8],  {from:accounts[2]});
+    }).then(function(mincap){
+      console.log('mincap', mincap.valueOf())
+    return tokenSaleContract.buy(accounts[8],{from:accounts[8], value: web3.toWei(300, "ether")})
+    }).then(function(){
+        console.log('di');
+        return tokenContract.balanceOf(accounts[8]);
+    }).then(function(value){
+       console.log('di', value.valueOf());
+         assert.equal(value.valueOf(), 9e24 , "expected throw got " +value.valueOf());
+    });
+  });
+  it("buy with a 500ETH cap", function() {
+    return whiteListContract.listAddress(accounts[7],500e18, 1000e18, {from:accounts[2]})
+    .then(function(result){
+      return whiteListContract.getMinCap(accounts[7],  {from:accounts[2]});
+    }).then(function(mincap){
+      console.log('mincap', mincap.valueOf())
+    return tokenSaleContract.buy(accounts[7],{from:accounts[7], value: web3.toWei(500, "ether")})
+    }).then(function(){
+        console.log('di');
+        return tokenContract.balanceOf(accounts[7]);
+    }).then(function(value){
+       console.log('di', value.valueOf());
+         assert.equal(value.valueOf(), 16e24 , "expected throw got " +value.valueOf());
+    });
+  });
+  it("buy with a 1000ETH cap", function() {
+    return whiteListContract.listAddress(accounts[6],1000e18, 3000e18, {from:accounts[2]})
+    .then(function(result){
+      return whiteListContract.getMinCap(accounts[6],  {from:accounts[2]});
+    }).then(function(mincap){
+      console.log('mincap', mincap.valueOf())
+    return tokenSaleContract.buy(accounts[6],{from:accounts[6], value: web3.toWei(1000, "ether")})
+    }).then(function(){
+        console.log('di');
+        return tokenContract.balanceOf(accounts[6]);
+    }).then(function(value){
+       console.log('di', value.valueOf());
+         assert.equal(value.valueOf(), 33e24 , "expected throw got " +value.valueOf());
+    });
+  });
+
+  it("fast forward to after token sale  3 days ", function() {
+    var fastForwardTime = publicSaleStartTime - web3.eth.getBlock('latest').timestamp + 3 * 24 * 3600 + 10;
+    return Helpers.sendPromise( 'evm_increaseTime', [fastForwardTime] ).then(function(){
+        return Helpers.sendPromise( 'evm_mine', [] ).then(function(){
+            var currentTime = web3.eth.getBlock('latest').timestamp;
+            if( currentTime <= publicSaleStartTime ) assert.fail( "current time is not as expected" );
+        });
+    });
+  });
+
+  it("buy with a 1ETH cap", function() {
+    return whiteListContract.listAddress(accounts[5],1e18, 3e18, {from:accounts[2]})
+    .then(function(result){
+      return whiteListContract.getMinCap(accounts[5],  {from:accounts[2]});
+    }).then(function(mincap){
+      console.log('mincap', mincap.valueOf())
+    return tokenSaleContract.buy(accounts[5],{from:accounts[5], value: web3.toWei(2, "ether")})
+    }).then(function(){
+        console.log('di');
+        return tokenContract.balanceOf(accounts[5]);
+    }).then(function(value){
+       console.log('di', value.valueOf());
+         assert.equal(value.valueOf(), 5e22 , "expected throw got " +value.valueOf());
+    });
+  });
+  it("fast forward to after token sale  16 days ", function() {
+    var fastForwardTime = publicSaleStartTime - web3.eth.getBlock('latest').timestamp + 16 * 24 * 3600 + 10;
+    return Helpers.sendPromise( 'evm_increaseTime', [fastForwardTime] ).then(function(){
+        return Helpers.sendPromise( 'evm_mine', [] ).then(function(){
+            var currentTime = web3.eth.getBlock('latest').timestamp;
+            if( currentTime <= publicSaleStartTime ) assert.fail( "current time is not as expected" );
+        });
+    });
+  });
+
+  it("buy with a 1ETH cap", function() {
+    return whiteListContract.listAddress(accounts[4],1e18, 3e18, {from:accounts[2]})
+    .then(function(result){
+      return whiteListContract.getMinCap(accounts[4],  {from:accounts[2]});
+    }).then(function(mincap){
+      console.log('mincap', mincap.valueOf())
+    return tokenSaleContract.buy(accounts[4],{from:accounts[4], value: web3.toWei(2, "ether")})
+    }).then(function(){
+        console.log('di');
+        return tokenContract.balanceOf(accounts[4]);
+    }).then(function(value){
+       console.log('di', value.valueOf());
+         assert.equal(value.valueOf(), 46e21 , "expected throw got " +value.valueOf());
+    });
+  });
+  it("buy debug buy a cap", function() {
+    return tokenSaleContract.debugBuy({from:accounts[2], value: web3.toWei(1, "ether")}).then(function(error){
+        assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
+    });
+  });
+
 
   it("buy without a cap", function() {
     return tokenSaleContract.buy(accounts[2],{from:accounts[2], value: web3.toWei(1, "ether")}).then(function(){
@@ -192,6 +309,83 @@ contract('token sale', function(accounts) {
         assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
     });
   });
- 
+
+   it("fast forward to after token sale  60 days ", function() {
+    var fastForwardTime = publicSaleStartTime - web3.eth.getBlock('latest').timestamp + 60 * 24 * 3600 + 10;
+    return Helpers.sendPromise( 'evm_increaseTime', [fastForwardTime] ).then(function(){
+        return Helpers.sendPromise( 'evm_mine', [] ).then(function(){
+            var currentTime = web3.eth.getBlock('latest').timestamp;
+            if( currentTime <= publicSaleStartTime ) assert.fail( "current time is not as expected" );
+        });
+    });
+  });
+   it("emergency drain from non admin", function() {
+    var multisigEthBalance;
+    var multisigTokenBalance;
+
+    return tokenSaleContract.emergencyDrain("0x0",{from:accounts[0]}).then(function(){
+        assert.fail("expected to throw");
+    }).catch(function(error){
+        assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
+    });
+  });
+
+  it("emergency drain from admin", function() {
+    var multisigEthBalance;
+    var multisigTokenBalance;
+
+    // transfer token to contract
+    return tokenContract.transfer(tokenSaleContract.address, web3.toWei(1, "ether"), {from:accounts[0]}).then(function(){
+        // check multisg balances
+        return getBalancePromise(multisig);
+    }).then(function(result){
+        multisigEthBalance = result;
+        return tokenContract.balanceOf(multisig);
+    }).then(function(result){
+        multisigTokenBalance = result;
+        console.log('aaa')
+        return tokenSaleContract.emergencyDrain(tokenContract.address,{from:admin});
+    }).then(function(){
+      console.log('aaa')
+        return getBalancePromise(multisig);
+    }).then(function(result){
+        assert.equal(result.valueOf(), multisigEthBalance.plus(1).valueOf(), "unexpected balance");
+        return tokenContract.balanceOf(multisig);
+    }).then(function(result){
+        assert.equal(result.valueOf(), multisigTokenBalance.plus(1).valueOf(), "unexpected balance");
+    });
+  });
+
+  it("try to finalize sale as non admin", function() {
+    return tokenSaleContract.finalizeSale({from:accounts[0]}).then(function(){
+        assert.fail("expected to throw");
+    }).catch(function(error){
+        assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
+    });
+  });
+
+  it("try to finalize sale as admin", function() {
+    var remainingTokens;
+    var multisigTokenBalance;
+    return tokenContract.balanceOf(tokenSaleContract.address).then(function(result){
+        remainingTokens = result;
+        return tokenContract.balanceOf(multisig);
+    }).then(function(result){
+        multisigTokenBalance = result;
+        return tokenSaleContract.finalizeSale({from:admin});
+    }).then(function(){
+        // check total supply
+        return tokenContract.totalSupply();
+    }).then(function(result){
+        assert.equal(result.valueOf(), totalSupply.minus(remainingTokens).valueOf(), "unexpected total supply");
+        // check that sale contract supply is 0
+        return tokenContract.balanceOf(tokenSaleContract.address);
+    }).then(function(result){
+        assert.equal(result.valueOf(), 0, "expected balance is 0");
+        return tokenContract.balanceOf(multisig);
+    }).then(function(result){
+        assert.equal(result.valueOf(), multisigTokenBalance.valueOf(), "multisig token balance unexpected");
+    });
+  });
 
 });

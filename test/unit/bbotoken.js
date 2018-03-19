@@ -67,39 +67,39 @@ contract('token contract', function(accounts) {
         assert.equal(result.valueOf(), value.valueOf(), "unexpected balance 2");    
       });
   });
-  it("deploy token get open sale", function() {
-    tokenOwner = accounts[0];
-    tokenAdmin = accounts[1];
+  // it("deploy token get open sale", function() {
+  //   tokenOwner = accounts[0];
+  //   tokenAdmin = accounts[1];
     
-    var currentTime = web3.eth.getBlock('latest').timestamp;
+  //   var currentTime = web3.eth.getBlock('latest').timestamp;
 
-    saleStartTime = currentTime; 
-    saleEndTime = saleStartTime + 24 * 60 * 60; // 24 hours sale
+  //   saleStartTime = currentTime; 
+  //   saleEndTime = saleStartTime + 24 * 60 * 60; // 24 hours sale
 
-    return Token.new(saleStartTime,saleEndTime, tokenAdmin,  {from: tokenOwner}).then(function(result){
-        tokenContract = result;
+  //   return Token.new(saleStartTime,saleEndTime, tokenAdmin,  {from: tokenOwner}).then(function(result){
+  //       tokenContract = result;
         
-        // check total supply
-        return tokenContract.totalSupply();
-    }).then(function(result){
-        console.log(result.valueOf());
-        assert.equal(result.valueOf(), totalSupply, "unexpected total supply");
+  //       // check total supply
+  //       return tokenContract.totalSupply();
+  //   }).then(function(result){
+  //       console.log(result.valueOf());
+  //       assert.equal(result.valueOf(), totalSupply, "unexpected total supply");
         
-        // check that owner gets all supply
-        return tokenContract.balanceOf(tokenOwner);
-    }).then(function(result){
-        assert.equal(result, totalSupply, "unexpected owner balance");
-    });
-  });
-  // it("fast forward to token sale", function() {
-  //   var fastForwardTime = saleStartTime - web3.eth.getBlock('latest').timestamp + 1;
-  //   return Helpers.sendPromise( 'evm_increaseTime', [fastForwardTime] ).then(function(){
-  //       return Helpers.sendPromise( 'evm_mine', [] ).then(function(){
-  //           var currentTime = web3.eth.getBlock('latest').timestamp;
-  //           if( currentTime <= saleStartTime ) assert.fail( "current time is not as expected" );
-  //       });
+  //       // check that owner gets all supply
+  //       return tokenContract.balanceOf(tokenOwner);
+  //   }).then(function(result){
+  //       assert.equal(result, totalSupply, "unexpected owner balance");
   //   });
   // });
+  it("fast forward to token sale", function() {
+    var fastForwardTime = saleStartTime - web3.eth.getBlock('latest').timestamp + 1;
+    return Helpers.sendPromise( 'evm_increaseTime', [fastForwardTime] ).then(function(){
+        return Helpers.sendPromise( 'evm_mine', [] ).then(function(){
+            var currentTime = web3.eth.getBlock('latest').timestamp;
+            if( currentTime <= saleStartTime ) assert.fail( "current time is not as expected" );
+        });
+    });
+  });
     
   it("transfer from owner in token sale", function() {
     var value =  5 * 1e15;
@@ -136,39 +136,39 @@ contract('token contract', function(accounts) {
     });
   });
 
-  // it("fast forward to token sale end", function() {
-  //   var fastForwardTime = saleEndTime - web3.eth.getBlock('latest').timestamp + 1;
-  //   return Helpers.sendPromise( 'evm_increaseTime', [fastForwardTime] ).then(function(){
-  //       return Helpers.sendPromise( 'evm_mine', [] ).then(function(){
-  //           var currentTime = web3.eth.getBlock('latest').timestamp;
-  //           if( currentTime <= saleEndTime ) assert.fail( "current time is not as expected" );
-  //       });
-  //   });
-  // });
-  it("deploy token to token sale end", function() {
-    tokenOwner = accounts[0];
-    tokenAdmin = accounts[1];
-    
-    var currentTime = web3.eth.getBlock('latest').timestamp;
-
-    saleStartTime = currentTime - 3600; 
-    saleEndTime = currentTime; // 24 hours sale
-
-    return Token.new(saleStartTime,saleEndTime, tokenAdmin,  {from: tokenOwner}).then(function(result){
-        tokenContract = result;
-        
-        // check total supply
-        return tokenContract.totalSupply();
-    }).then(function(result){
-        console.log(result.valueOf());
-        assert.equal(result.valueOf(), totalSupply, "unexpected total supply");
-        
-        // check that owner gets all supply
-        return tokenContract.balanceOf(tokenOwner);
-    }).then(function(result){
-        assert.equal(result, totalSupply, "unexpected owner balance");
+  it("fast forward to token sale end", function() {
+    var fastForwardTime = saleEndTime - web3.eth.getBlock('latest').timestamp + 1;
+    return Helpers.sendPromise( 'evm_increaseTime', [fastForwardTime] ).then(function(){
+        return Helpers.sendPromise( 'evm_mine', [] ).then(function(){
+            var currentTime = web3.eth.getBlock('latest').timestamp;
+            if( currentTime <= saleEndTime ) assert.fail( "current time is not as expected" );
+        });
     });
   });
+  // it("deploy token to token sale end", function() {
+  //   tokenOwner = accounts[0];
+  //   tokenAdmin = accounts[1];
+    
+  //   var currentTime = web3.eth.getBlock('latest').timestamp;
+
+  //   saleStartTime = currentTime - 3600; 
+  //   saleEndTime = currentTime; // 24 hours sale
+
+  //   return Token.new(saleStartTime,saleEndTime, tokenAdmin,  {from: tokenOwner}).then(function(result){
+  //       tokenContract = result;
+        
+  //       // check total supply
+  //       return tokenContract.totalSupply();
+  //   }).then(function(result){
+  //       console.log(result.valueOf());
+  //       assert.equal(result.valueOf(), totalSupply, "unexpected total supply");
+        
+  //       // check that owner gets all supply
+  //       return tokenContract.balanceOf(tokenOwner);
+  //   }).then(function(result){
+  //       assert.equal(result, totalSupply, "unexpected owner balance");
+  //   });
+  // });
   it("transfer from owner after token sale", function() {
     var value = web3.toWei( 100, "finney" );
     return tokenContract.transfer(accounts[4], value, {from:tokenOwner});
@@ -295,7 +295,8 @@ contract('token contract', function(accounts) {
     var value = web3.toWei( 100, "finney" );
     return tokenContract.transfer(accounts[5], value, {from:tokenOwner});
   });
-
+  
+  
   
   it("deploy another token and send it to token contract", function() {
     totalSupply = 2000000000 * 1e18
