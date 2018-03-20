@@ -1,4 +1,4 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.15;
 
 import './BigbomToken.sol';
 import './zeppelin/ownership/Ownable.sol';

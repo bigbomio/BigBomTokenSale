@@ -377,7 +377,7 @@ contract('token sale', function(accounts) {
         // check total supply
         return tokenContract.totalSupply();
     }).then(function(result){
-        assert.equal(result.valueOf(), totalSupply.minus(remainingTokens).valueOf(), "unexpected total supply");
+        assert.equal(result.valueOf(), totalSupply - remainingTokens, "unexpected total supply");
         // check that sale contract supply is 0
         return tokenContract.balanceOf(tokenSaleContract.address);
     }).then(function(result){

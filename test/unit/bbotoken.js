@@ -55,8 +55,8 @@ contract('token contract', function(accounts) {
     });
   });
   
-  it("transfer before token sale", function() {
-    var value = 5 * 1e15;
+  it("transfer before token sale 2", function() {
+    var value = 5e15;
     return tokenContract.transfer(accounts[2], value, {from:tokenOwner}).then(function(){
         // get balances
         return tokenContract.balanceOf(tokenOwner);
@@ -102,15 +102,15 @@ contract('token contract', function(accounts) {
   });
     
   it("transfer from owner in token sale", function() {
-    var value =  5 * 1e15;
+    var value =  5e15;
     return tokenContract.transfer(accounts[2], value, {from:tokenOwner}).then(function(){
         // get balances
         return tokenContract.balanceOf(tokenOwner);
       }).then(function(result){
-        assert.equal(result.valueOf(), totalSupply - value, "unexpected balance");
+        assert.equal(result.valueOf(), totalSupply - 1e16, "unexpected balance");
         return tokenContract.balanceOf(accounts[2]);
       }).then(function(result){
-        assert.equal(result.valueOf(), value , "unexpected balance");    
+        assert.equal(result.valueOf(), 2*value , "unexpected balance");    
       });
   });
 
