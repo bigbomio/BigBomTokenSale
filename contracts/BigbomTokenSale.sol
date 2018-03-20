@@ -71,42 +71,14 @@ contract BigbomTokenSale {
         buy( msg.sender );
     }
 
-    // event ProxyBuy( bytes32 indexed _proxy, address _recipient, uint _amountInWei );
-    // function proxyBuy( bytes32 proxy, address recipient ) payable returns(uint){
-    //     uint amount = buy( recipient );
-    //     proxyPurchases[proxy] = proxyPurchases[proxy].add(amount);
-    //     ProxyBuy( proxy, recipient, amount );
-
-    //     return amount;
-    // }
 
 
-    function getBonus(uint _tokens, uint _amountInWei) returns (uint){
+    function getBonus(uint _tokens) returns (uint){
         if (now > openSaleStartTime && now <= (openSaleStartTime+3 days)){
-            if (_amountInWei >= 100*1e18 && _amountInWei < 300 * 1e18){
-                return  _tokens.mul(45).div(100);
-            }
-            if (_amountInWei >= 300*1e18 && _amountInWei < 500 * 1e18){
-                return  _tokens.mul(50).div(100);
-            }
-            if (_amountInWei >= 500*1e18 && _amountInWei < 1000 * 1e18){
-                return  _tokens.mul(60).div(100);
-            }
-            if (_amountInWei >= 1000*1e18 && _amountInWei <= 3000 * 1e18){
-                return  _tokens.mul(65).div(100);
-            }
             return _tokens.mul(25).div(100);
-        }else if (now > (openSaleStartTime+3  days) && now <= (openSaleStartTime+16 days)){
-            return _tokens.mul(25).div(100);
-        }else if (now > (openSaleStartTime+16 days) && now <= (openSaleStartTime+26 days)){
-            return _tokens.mul(15).div(100);
-        }else if (now > (openSaleStartTime+26 days) && now <= (openSaleStartTime+36 days)){
-            return _tokens.mul(10).div(100);
-        }else if (now > (openSaleStartTime+36 days) && now <= (openSaleStartTime+47 days)){
-            return _tokens.mul(5).div(100);
-        }else if (now > (openSaleStartTime+47 days) && now <= (openSaleStartTime+51 days)){
-            return _tokens.mul(3).div(100);
-        }else{
+        }
+        else
+        {
             return 0;
         }
     }
@@ -140,8 +112,7 @@ contract BigbomTokenSale {
         // 1ETH = 20000 BBO
         uint recievedTokens = allowValue.mul( 20000 );
         // TODO bounce
-        //uint bonus = getBonus(recievedTokens, msg.value);
-        uint bonus = getBonus(recievedTokens, allowValue);
+        uint bonus = getBonus(recievedTokens);
         
         recievedTokens = recievedTokens.add(bonus);
         assert( token.transfer( recipient, recievedTokens ) );
