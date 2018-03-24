@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.19;
 
 import './zeppelin/token/StandardToken.sol';
 import './zeppelin/ownership/Ownable.sol';
@@ -11,19 +11,19 @@ contract BigbomToken is StandardToken, Ownable {
     uint    public  constant decimals = 18;
     uint    public   totalSupply = 2000000000 * 1e18; //2,000,000,000
 
-    uint    public  founderAmount = 200000000 * 1e18; // 200,000,000
-    uint    public  coreStaffAmount = 60000000 * 1e18; // 60,000,000
-    uint    public  advisorAmount = 140000000 * 1e18; // 140,000,000
-    uint    public  networkGrowthAmount = 600000000 * 1e18; //600,000,000
-    uint    public  reserveAmount = 635000000 * 1e18; // 635,000,000
-    uint    public  bountyAmount = 40000000 * 1e18; // 40,000,000
+    uint    public  constant founderAmount = 200000000 * 1e18; // 200,000,000
+    uint    public  constant coreStaffAmount = 60000000 * 1e18; // 60,000,000
+    uint    public  constant advisorAmount = 140000000 * 1e18; // 140,000,000
+    uint    public  constant networkGrowthAmount = 600000000 * 1e18; //600,000,000
+    uint    public  constant reserveAmount = 635000000 * 1e18; // 635,000,000
+    uint    public  constant bountyAmount = 40000000 * 1e18; // 40,000,000
 
-    address             public bbFounderCoreStaffWallet;
-    address             public bbAdvisorWallet;
-    address             public bbAirdropWallet;
-    address             public bbNetworkGrowthWallet;
-    address             public bbReserveWallet;
-    address             public bbPublicSaleWallet;
+    address public  constant bbFounderCoreStaffWallet = address(0x0);
+    address public  constant bbAdvisorWallet= address(0x0);
+    address public  constant bbAirdropWallet= address(0x0);
+    address public  constant bbNetworkGrowthWallet= address(0x0);
+    address public  constant bbReserveWallet= address(0x0);
+    address public  constant bbPublicSaleWallet= address(0x0);
 
     uint    public  saleStartTime;
     uint    public  saleEndTime;
@@ -36,12 +36,10 @@ contract BigbomToken is StandardToken, Ownable {
     mapping (address => uint) public maxAllowedAmount;
 
     /* This generates a public event on the blockchain that will notify clients */
-    event FrozenFunds(address target, bool frozen, uint seconds);
-    /// @notice `freeze? Prevent | Allow` `target` from sending & receiving tokens
-    /// @param target Address to be frozen
-    /// @param freeze either to freeze it or not
+    event FrozenFunds(address target, bool frozen, uint _seconds);
+   
 
-    function checkMaxAllowed(address target)  public  returns (uint) {
+    function checkMaxAllowed(address target)  public constant  returns (uint) {
         var maxAmount  = balances[target];
         if(target == bbFounderCoreStaffWallet){
             maxAmount = 10000000 * 1e18;
@@ -62,7 +60,7 @@ contract BigbomToken is StandardToken, Ownable {
     }
 
 
-    function freezeAccount(address target, bool freeze, uint seconds) onlyOwner public {
+    function freezeAccount(address target, bool freeze, uint _seconds) onlyOwner public {
         
         // if unfreeze
         if(!freeze){
@@ -73,14 +71,14 @@ contract BigbomToken is StandardToken, Ownable {
             // unfreeze account
             frozenAccount[target] = freeze;
             // set time to 0
-            seconds = 0;           
+            _seconds = 0;           
         }else{
             frozenAccount[target] = freeze;
             
         }
-        // set endTime = now + seconds to freeze
-        frozenTime[target] = now + seconds;
-        FrozenFunds(target, freeze, seconds);
+        // set endTime = now + _seconds to freeze
+        frozenTime[target] = now + _seconds;
+        FrozenFunds(target, freeze, _seconds);
         
     }
 
@@ -107,31 +105,14 @@ contract BigbomToken is StandardToken, Ownable {
         require (allowcap > 0);
         _;
     }
-    function setPrivateList(BigbomPrivateSaleList _privateSaleList) onlyOwner {
-                privateSaleList = _privateSaleList;
+    function setPrivateList(BigbomPrivateSaleList _privateSaleList)   onlyOwner public {
+        require(_privateSaleList != address(0x0));
+        privateSaleList = _privateSaleList;
 
     }
-    function getFreezeTimeDefaut(address target) public returns (uint) {
-        var dfTime  = 0;
-        if(target == bbFounderCoreStaffWallet){
-            dfTime = 24 * 30 * 24 * 3600; // 24 thang
-        }
-        if(target == bbAdvisorWallet){
-            dfTime = 12 * 30 * 24 * 3600;
-        }
-        if(target == bbAirdropWallet){
-            dfTime = 2 * 30 * 24 * 3600;
-        }
-        if(target == bbNetworkGrowthWallet){
-            dfTime = 12 * 30 * 24 * 3600;
-        }
-        if(target == bbReserveWallet){
-            dfTime = 12 * 30 * 24 * 3600;
-        }
-        return dfTime;
-    }
+    
     function BigbomToken(uint startTime, uint endTime, address admin
-        ) {
+        ) public {
         // Mint all tokens. Then disable minting forever.
         balances[msg.sender] = totalSupply;
         Transfer(address(0x0), msg.sender, totalSupply);
@@ -139,17 +120,30 @@ contract BigbomToken is StandardToken, Ownable {
        
         saleStartTime = startTime;
         saleEndTime = endTime;
-        tokenSaleContract = msg.sender;
         transferOwnership(admin); // admin could drain tokens that were sent here by mistake
     }
 
-    function setTokenSaleContract(address _tokenSaleContract) onlyOwner {
+    function setTimeSale(uint startTime, uint endTime) onlyOwner public {
+        require (now < saleStartTime || now > saleEndTime);
+        require (now < startTime);
+        require ( startTime < endTime);
+        saleStartTime = startTime;
+        saleEndTime = endTime;
+    }
+
+    function setTokenSaleContract(address _tokenSaleContract) onlyOwner public {
+        // check address ! 0
+        require(_tokenSaleContract != address(0x0));
+        // do not allow run when saleStartTime <= now <= saleEndTime
+        require (now < saleStartTime || now > saleEndTime);
+
         tokenSaleContract = _tokenSaleContract;
     }
     function transfer(address _to, uint _value)
         onlyWhenTransferEnabled
         validDestination(_to)
         validFrom(msg.sender)
+        public 
         returns (bool) {
             // check from address is Vesting Address
             if (msg.sender == bbFounderCoreStaffWallet || msg.sender == bbAdvisorWallet|| msg.sender == bbAirdropWallet|| msg.sender == bbNetworkGrowthWallet|| msg.sender == bbReserveWallet){
@@ -162,7 +156,7 @@ contract BigbomToken is StandardToken, Ownable {
                 // if maxAmount = 0, need to block this msg.sender
                 if((withdrawAmount + _value) == defaultAllowAmount){
                     // freeze account
-                    freezeAccount( msg.sender, true, getFreezeTimeDefaut(msg.sender));
+                    freezeAccount( msg.sender, true, 24 * 3600); // temp freeze account 24h
                     maxAllowedAmount[msg.sender] = 0;
                 }else{
                     // set max withdrawAmount
@@ -176,6 +170,7 @@ contract BigbomToken is StandardToken, Ownable {
     function transferPrivateSale(address _to, uint _value)
         onlyOwner
         onlyPrivateListEnabled(_to) 
+        public 
         returns (bool) {
          return transfer( _to,  _value);
     }
@@ -184,6 +179,7 @@ contract BigbomToken is StandardToken, Ownable {
         onlyWhenTransferEnabled
         validDestination(_to)
         validFrom(_from)
+        public 
         returns (bool) {
             // check from address is Vesting
             if (_from == bbFounderCoreStaffWallet || _from == bbAdvisorWallet|| _from == bbAirdropWallet|| _from == bbNetworkGrowthWallet|| _from == bbReserveWallet){
@@ -196,7 +192,7 @@ contract BigbomToken is StandardToken, Ownable {
                 // if maxAmount = 0, need to block this _from
                 if(maxAllowedAmount[_from]==checkMaxAllowed(_from)){
                     // freeze account
-                    freezeAccount( _from, true, getFreezeTimeDefaut(_from));
+                    freezeAccount( _from, true, 24 * 3600);
                 }
             }
             return super.transferFrom(_from, _to, _value);
@@ -205,6 +201,7 @@ contract BigbomToken is StandardToken, Ownable {
     event Burn(address indexed _burner, uint _value);
 
     function burn(uint _value) onlyWhenTransferEnabled
+        public 
         returns (bool){
         balances[msg.sender] = balances[msg.sender].sub(_value);
         totalSupply = totalSupply.sub(_value);
@@ -215,12 +212,13 @@ contract BigbomToken is StandardToken, Ownable {
 
     // save some gas by making only one contract call
     function burnFrom(address _from, uint256 _value) onlyWhenTransferEnabled
+        public 
         returns (bool) {
         assert( transferFrom( _from, msg.sender, _value ) );
         return burn(_value);
     }
 
-    function emergencyERC20Drain( ERC20 token, uint amount ) onlyOwner {
+    function emergencyERC20Drain( ERC20 token, uint amount ) onlyOwner public {
         token.transfer( owner, amount );
     }
 }

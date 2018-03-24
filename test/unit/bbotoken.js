@@ -67,30 +67,7 @@ contract('token contract', function(accounts) {
         assert.equal(result.valueOf(), value.valueOf(), "unexpected balance 2");    
       });
   });
-  // it("deploy token get open sale", function() {
-  //   tokenOwner = accounts[0];
-  //   tokenAdmin = accounts[1];
-    
-  //   var currentTime = web3.eth.getBlock('latest').timestamp;
 
-  //   saleStartTime = currentTime; 
-  //   saleEndTime = saleStartTime + 24 * 60 * 60; // 24 hours sale
-
-  //   return Token.new(saleStartTime,saleEndTime, tokenAdmin,  {from: tokenOwner}).then(function(result){
-  //       tokenContract = result;
-        
-  //       // check total supply
-  //       return tokenContract.totalSupply();
-  //   }).then(function(result){
-  //       console.log(result.valueOf());
-  //       assert.equal(result.valueOf(), totalSupply, "unexpected total supply");
-        
-  //       // check that owner gets all supply
-  //       return tokenContract.balanceOf(tokenOwner);
-  //   }).then(function(result){
-  //       assert.equal(result, totalSupply, "unexpected owner balance");
-  //   });
-  // });
   it("fast forward to token sale", function() {
     var fastForwardTime = saleStartTime - web3.eth.getBlock('latest').timestamp + 1;
     return Helpers.sendPromise( 'evm_increaseTime', [fastForwardTime] ).then(function(){
@@ -101,17 +78,13 @@ contract('token contract', function(accounts) {
     });
   });
     
-  it("transfer from owner in token sale", function() {
+  it("transfer from owner in token sale 2", function() {
     var value =  5e15;
     return tokenContract.transfer(accounts[2], value, {from:tokenOwner}).then(function(){
-        // get balances
-        return tokenContract.balanceOf(tokenOwner);
-      }).then(function(result){
-        assert.equal(result.valueOf(), totalSupply - 1e16, "unexpected balance");
-        return tokenContract.balanceOf(accounts[2]);
-      }).then(function(result){
-        assert.equal(result.valueOf(), 2*value , "unexpected balance");    
-      });
+        assert.fail("transfer from should fail in token sale");  
+    }).catch(function(error){
+        assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
+    });
   });
 
   it("transfer from non owner in token sale", function() {
@@ -145,30 +118,7 @@ contract('token contract', function(accounts) {
         });
     });
   });
-  // it("deploy token to token sale end", function() {
-  //   tokenOwner = accounts[0];
-  //   tokenAdmin = accounts[1];
-    
-  //   var currentTime = web3.eth.getBlock('latest').timestamp;
-
-  //   saleStartTime = currentTime - 3600; 
-  //   saleEndTime = currentTime; // 24 hours sale
-
-  //   return Token.new(saleStartTime,saleEndTime, tokenAdmin,  {from: tokenOwner}).then(function(result){
-  //       tokenContract = result;
-        
-  //       // check total supply
-  //       return tokenContract.totalSupply();
-  //   }).then(function(result){
-  //       console.log(result.valueOf());
-  //       assert.equal(result.valueOf(), totalSupply, "unexpected total supply");
-        
-  //       // check that owner gets all supply
-  //       return tokenContract.balanceOf(tokenOwner);
-  //   }).then(function(result){
-  //       assert.equal(result, totalSupply, "unexpected owner balance");
-  //   });
-  // });
+  
   it("transfer from owner after token sale", function() {
     var value = web3.toWei( 100, "finney" );
     return tokenContract.transfer(accounts[4], value, {from:tokenOwner});
@@ -364,8 +314,33 @@ contract('token contract', function(accounts) {
     });
   });
 
+  it("try to unfreeze account in frozenTime ", function(){
+    return tokenContract.freezeAccount(accounts[0], true, 3600, {from:tokenAdmin}).then(function(){
+      return tokenContract.freezeAccount(accounts[0], false, 0, {from:tokenAdmin}).then(function(){
 
-  
+         assert.fail("unfreeze should fail");
+        }).catch(function(error){
+            assert( Helpers.throwErrorMessage(error), "expected throw got " + error);    
+        });
+      });
+  });
+  it("fast forward to frozenTime", function() {
+    var fastForwardTime = 3600;
+    return Helpers.sendPromise( 'evm_increaseTime', [fastForwardTime] ).then(function(){
+        return Helpers.sendPromise( 'evm_mine', [] ).then(function(){
+            var currentTime = web3.eth.getBlock('latest').timestamp;
+            if( currentTime > saleEndTime ) assert.fail( "current time is not as expected" );
+        });
+    });
+  });
+  it("try to unfreeze account after frozenTime ", function(){
+      return tokenContract.freezeAccount(accounts[0], false, 0, {from:tokenAdmin}).then(function(){
+        return tokenContract.frozenAccount(accounts[0]).then(function(result){
+           assert(!result,  "expected throw got " + result);
+        });
+            
+        });
+  });
 // TODO - check drain
 
 

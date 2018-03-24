@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.19;
 
 import './BigbomToken.sol';
 import './zeppelin/ownership/Ownable.sol';
@@ -18,7 +18,6 @@ contract BigbomTokenSale {
 
     mapping(address=>uint)    public participated;
 
-    // mapping(bytes32=>uint) public proxyPurchases;
     using SafeMath for uint;
 
     function BigbomTokenSale( address _admin,
@@ -26,8 +25,14 @@ contract BigbomTokenSale {
                               BigbomContributorWhiteList _whilteListContract,
                               uint _publicSaleStartTime,
                               uint _publicSaleEndTime,
-                              BigbomToken _token)       
+                              BigbomToken _token) public       
     {
+        require (_publicSaleStartTime < _publicSaleEndTime);
+        require (_admin != address(0x0));
+        require (_bigbomMultiSigWallet != address(0x0));
+        require (_whilteListContract != address(0x0));
+        require (_token != address(0x0));
+
         admin = _admin;
         bigbomMultiSigWallet = _bigbomMultiSigWallet;
         list = _whilteListContract;
@@ -36,23 +41,23 @@ contract BigbomTokenSale {
         token = _token;
     }
     
-    function saleEnded() constant returns(bool) {
+    function saleEnded() public constant returns(bool) {
         return now > openSaleEndTime;
     }
 
-    function saleStarted() constant returns(bool) {
+    function saleStarted() public constant returns(bool) {
         return now >= openSaleStartTime;
     }
 
-    function setHaltSale( bool halt ) {
+    function setHaltSale( bool halt ) public {
         require( msg.sender == admin );
         haltSale = halt;
     }
     // this is a seperate function so user could query it before crowdsale starts
-    function contributorMinCap( address contributor ) constant returns(uint) {
+    function contributorMinCap( address contributor ) public constant returns(uint) {
         return list.getMinCap( contributor );
     }
-    function contributorMaxCap( address contributor, uint amountInWei ) constant returns(uint) {
+    function contributorMaxCap( address contributor, uint amountInWei ) public constant returns(uint) {
         uint cap = list.getMaxCap( contributor );
         if( cap == 0 ) return 0;
         uint remainedCap = cap.sub( participated[ contributor ] );
@@ -67,13 +72,13 @@ contract BigbomTokenSale {
         return result;
     }
 
-    function() payable {
+    function() payable public {
         buy( msg.sender );
     }
 
 
 
-    function getBonus(uint _tokens) returns (uint){
+    function getBonus(uint _tokens) public view returns (uint){
         if (now > openSaleStartTime && now <= (openSaleStartTime+3 days)){
             return _tokens.mul(25).div(100);
         }
@@ -84,7 +89,7 @@ contract BigbomTokenSale {
     }
 
     event Buy( address _buyer, uint _tokens, uint _payedWei, uint _bonus );
-    function buy( address recipient ) payable returns(uint){
+    function buy( address recipient ) payable public returns(uint){
         //require( tx.gasprice <= 50000000000 wei );
 
         require( ! haltSale );
@@ -129,9 +134,9 @@ contract BigbomTokenSale {
 
     event FinalizeSale();
     // function is callable by everyone
-    function finalizeSale() {
+    function finalizeSale() public {
         require( saleEnded() );
-        require( msg.sender == admin );
+        //require( msg.sender == admin );
 
         // burn remaining tokens
         token.burn(token.balanceOf(this));
@@ -141,7 +146,7 @@ contract BigbomTokenSale {
 
     // ETH balance is always expected to be 0.
     // but in case something went wrong, we use this function to extract the eth.
-    function emergencyDrain(ERC20 anyToken) returns(bool){
+    function emergencyDrain(ERC20 anyToken) public returns(bool){
         require( msg.sender == admin );
         require( saleEnded() );
 
@@ -158,7 +163,7 @@ contract BigbomTokenSale {
 
     // just to check that funds goes to the right place
     // tokens are not given in return
-    function debugBuy() payable {
+    function debugBuy() payable public {
         require( msg.value > 0 );
         sendETHToMultiSig( msg.value );
     }
