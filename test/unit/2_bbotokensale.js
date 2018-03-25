@@ -102,7 +102,7 @@ contract('token sale', function(accounts) {
     
     return Token.new(publicSaleStartTime ,
                                 publicSaleEndTime7Plus,
-                                admin, {from:accounts[2]} ).then(function(token){
+                                admin, accounts[4], accounts[4], accounts[4], accounts[4], accounts[4], accounts[4], {from:accounts[2]} ).then(function(token){
         tokenContract = token;
         console.log('tokenContract Contract: ', tokenContract.address);
         tokenContract.transfer( multisig, premintedSupply , {from:accounts[2]});
@@ -111,7 +111,7 @@ contract('token sale', function(accounts) {
     }).then(function(privateList){
         console.log('PrivateList Contract: ', privateList.address);
         privateListContract = privateList;
-        tokenContract.freezeAccount(multisig, true, {from:accounts[2]});
+        tokenContract.freezeAccount(multisig, true, 3600, {from:accounts[2]});
 
         tokenContract.setPrivateList(privateList.address, {from:accounts[2]}); 
 

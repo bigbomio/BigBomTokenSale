@@ -105,16 +105,4 @@ var addresses = [ accounts[0],accounts[1],accounts[2],accounts[3]];
     });
   });
 
-  it("destroy from non owner", function() {
-    return listContract.destroy({from:nonOwner}).then(function(){
-        assert.fail("expected to fail");
-    }).catch(function(error){
-        assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
-
-    });
-  });
-
-  it("destroy from owner", function() {
-    return listContract.destroy({from:owner});
-  });
 });

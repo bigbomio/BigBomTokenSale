@@ -18,12 +18,12 @@ contract BigbomToken is StandardToken, Ownable {
     uint    public  constant reserveAmount = 635000000 * 1e18; // 635,000,000
     uint    public  constant bountyAmount = 40000000 * 1e18; // 40,000,000
 
-    address public  constant bbFounderCoreStaffWallet = address(0x0);
-    address public  constant bbAdvisorWallet= address(0x0);
-    address public  constant bbAirdropWallet= address(0x0);
-    address public  constant bbNetworkGrowthWallet= address(0x0);
-    address public  constant bbReserveWallet= address(0x0);
-    address public  constant bbPublicSaleWallet= address(0x0);
+    address public   bbFounderCoreStaffWallet ;
+    address public   bbAdvisorWallet;
+    address public   bbAirdropWallet;
+    address public   bbNetworkGrowthWallet;
+    address public   bbReserveWallet;
+    address public   bbPublicSaleWallet;
 
     uint    public  saleStartTime;
     uint    public  saleEndTime;
@@ -111,13 +111,31 @@ contract BigbomToken is StandardToken, Ownable {
 
     }
     
-    function BigbomToken(uint startTime, uint endTime, address admin
+    function BigbomToken(uint startTime, uint endTime, address admin, address _bbFounderCoreStaffWallet, address _bbAdvisorWallet,
+        address _bbAirdropWallet,
+        address _bbNetworkGrowthWallet,
+        address _bbReserveWallet, 
+        address _bbPublicSaleWallet
         ) public {
         // Mint all tokens. Then disable minting forever.
         balances[msg.sender] = totalSupply;
         Transfer(address(0x0), msg.sender, totalSupply);
         // init internal amount limit
-       
+        // set address when deploy
+        bbAirdropWallet = _bbAirdropWallet;
+        bbAdvisorWallet = _bbAdvisorWallet;
+        bbReserveWallet = _bbReserveWallet;
+        bbNetworkGrowthWallet = _bbNetworkGrowthWallet;
+        bbFounderCoreStaffWallet = _bbFounderCoreStaffWallet;
+        bbPublicSaleWallet = _bbPublicSaleWallet;
+
+        //transfer(bbAdvisorWallet, advisorAmount);
+        //transfer(bbAirdropWallet, 0);
+        //transfer(bbReserveWallet, reserveAmount);
+        //transfer(bbNetworkGrowthWallet, networkGrowthAmount);
+        //transfer(bbFounderCoreStaffWallet, founderAmount);
+        //transfer(bbPublicSaleWallet, 0);
+
         saleStartTime = startTime;
         saleEndTime = endTime;
         transferOwnership(admin); // admin could drain tokens that were sent here by mistake
@@ -145,26 +163,24 @@ contract BigbomToken is StandardToken, Ownable {
         validFrom(msg.sender)
         public 
         returns (bool) {
-            // check from address is Vesting Address
-            if (msg.sender == bbFounderCoreStaffWallet || msg.sender == bbAdvisorWallet|| msg.sender == bbAirdropWallet|| msg.sender == bbNetworkGrowthWallet|| msg.sender == bbReserveWallet){
-                var withdrawAmount =  maxAllowedAmount[msg.sender];
-                var defaultAllowAmount = checkMaxAllowed(msg.sender);
-                var maxAmount = defaultAllowAmount - withdrawAmount;
-                // _value transfer must <= maxAmount
-                require(maxAmount >= _value);
+            // check maxAllowedAmount
+            var withdrawAmount =  maxAllowedAmount[msg.sender];
+            var defaultAllowAmount = checkMaxAllowed(msg.sender);
+            var maxAmount = defaultAllowAmount - withdrawAmount;
+            // _value transfer must <= maxAmount
+            require(maxAmount >= _value);
 
-                // if maxAmount = 0, need to block this msg.sender
-                if((withdrawAmount + _value) == defaultAllowAmount){
-                    // freeze account
-                    freezeAccount( msg.sender, true, 24 * 3600); // temp freeze account 24h
-                    maxAllowedAmount[msg.sender] = 0;
-                }else{
-                    // set max withdrawAmount
-                    maxAllowedAmount[msg.sender] = withdrawAmount + _value;
-                }
+            // if maxAmount = 0, need to block this msg.sender
+            if((withdrawAmount + _value) == defaultAllowAmount){
+                // freeze account
+                freezeAccount( msg.sender, true, 24 * 3600); // temp freeze account 24h
+                maxAllowedAmount[msg.sender] = 0;
+            }else{
+                // set max withdrawAmount
+                maxAllowedAmount[msg.sender] = withdrawAmount + _value;
             }
 
-        return super.transfer(_to, _value);
+            return super.transfer(_to, _value);
     }
 
     function transferPrivateSale(address _to, uint _value)
@@ -182,19 +198,18 @@ contract BigbomToken is StandardToken, Ownable {
         public 
         returns (bool) {
             // check from address is Vesting
-            if (_from == bbFounderCoreStaffWallet || _from == bbAdvisorWallet|| _from == bbAirdropWallet|| _from == bbNetworkGrowthWallet|| _from == bbReserveWallet){
-                var withdrawAmount =  maxAllowedAmount[_from];
-                var maxAmount = checkMaxAllowed(_from) - withdrawAmount;
+            var withdrawAmount =  maxAllowedAmount[_from];
+            var maxAmount = checkMaxAllowed(_from) - withdrawAmount;
 
-                require(maxAmount >= _value);
+            require(maxAmount >= _value);
 
-                maxAllowedAmount[_from] = withdrawAmount + _value;
-                // if maxAmount = 0, need to block this _from
-                if(maxAllowedAmount[_from]==checkMaxAllowed(_from)){
-                    // freeze account
-                    freezeAccount( _from, true, 24 * 3600);
-                }
+            maxAllowedAmount[_from] = withdrawAmount + _value;
+            // if maxAmount = 0, need to block this _from
+            if(maxAllowedAmount[_from]==checkMaxAllowed(_from)){
+                // freeze account
+                freezeAccount( _from, true, 24 * 3600);
             }
+            
             return super.transferFrom(_from, _to, _value);
     }
 

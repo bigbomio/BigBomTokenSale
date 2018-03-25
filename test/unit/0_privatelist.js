@@ -17,7 +17,7 @@ var nonOwner;
 
 
 contract('private list', function(accounts) {
-var addresses = [ accounts[0],accounts[1],accounts[2],accounts[3]];
+  
   beforeEach(function(done){
     done();
   });
@@ -25,7 +25,7 @@ var addresses = [ accounts[0],accounts[1],accounts[2],accounts[3]];
     done();
   });
 
-
+  var addresses = [ accounts[0],accounts[1],accounts[2],accounts[3]];
   it("deploy contract", function() {
     owner = accounts[2];
     nonOwner = accounts[0];
@@ -102,16 +102,5 @@ var addresses = [ accounts[0],accounts[1],accounts[2],accounts[3]];
     });
   });
 
-  it("destroy from non owner", function() {
-    return listContract.destroy({from:nonOwner}).then(function(){
-        assert.fail("expected to fail");
-    }).catch(function(error){
-        assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
-
-    });
-  });
-
-  it("destroy from owner", function() {
-    return listContract.destroy({from:owner});
-  });
+ 
 });

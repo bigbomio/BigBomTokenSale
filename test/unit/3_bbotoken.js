@@ -21,7 +21,6 @@ var erc20TokenContract;
 ////////////////////////////////////////////////////////////////////////////////
 
 contract('token contract', function(accounts) {
-
   beforeEach(function(done){
     done();
   });
@@ -39,7 +38,7 @@ contract('token contract', function(accounts) {
     saleStartTime = currentTime + 3600; // 1 hour from now
     saleEndTime = saleStartTime + 24 * 60 * 60; // 24 hours sale
 
-    return Token.new(saleStartTime,saleEndTime, tokenAdmin,{from: tokenOwner}).then(function(result){
+    return Token.new(saleStartTime,saleEndTime, tokenAdmin, accounts[4], accounts[4], accounts[4], accounts[4], accounts[4], accounts[4],{from: tokenOwner}).then(function(result){
         tokenContract = result;
         
         // check total supply
@@ -54,7 +53,25 @@ contract('token contract', function(accounts) {
         assert.equal(result.valueOf(), totalSupply.valueOf(), "unexpected owner balance");
     });
   });
-  
+
+  it("set token sale contract before ICO", function() {
+      return tokenContract.setTokenSaleContract(accounts[1], {from:tokenAdmin}).then(function(){
+          return tokenContract.tokenSaleContract();
+      }).then(function(result){
+          assert.equal(result, accounts[1], "unexpected tokenSaleContract" + result);
+      });
+  });
+  it("set time sale before ICO", function() {
+    saleEndTime =  saleStartTime + 48 * 60 * 60;
+    console.log(saleEndTime)
+      return tokenContract.setTimeSale(saleStartTime, saleEndTime, {from:tokenAdmin}).then(function(){
+          return tokenContract.saleEndTime();
+      }).then(function(result){
+        console.log(result.valueOf());
+          assert.equal(result.valueOf(), saleEndTime.valueOf(), "unexpected tokenSaleContract" + result);
+      });
+  });
+
   it("transfer before token sale 2", function() {
     var value = 5e15;
     return tokenContract.transfer(accounts[2], value, {from:tokenOwner}).then(function(){
@@ -77,7 +94,23 @@ contract('token contract', function(accounts) {
         });
     });
   });
-    
+  
+  it("set token sale contract in ICO", function() {
+     return tokenContract.setTokenSaleContract(accounts[2], {from:tokenAdmin}).then(function(){
+          assert.fail("set token sale contract should fail in token sale");  
+      }).catch(function(error){
+        assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
+       });
+  });
+  it("set time sale in ICO", function() {
+    saleEndTime =  saleStartTime + 24 * 60 * 60;
+      return tokenContract.setTimeSale(saleStartTime, saleEndTime, {from:tokenAdmin}).then(function(){
+          assert.fail("set time sale should fail in token sale");  
+      }).then(function(result){
+           assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
+      });
+  });
+
   it("transfer from owner in token sale 2", function() {
     var value =  5e15;
     return tokenContract.transfer(accounts[2], value, {from:tokenOwner}).then(function(){
@@ -258,7 +291,7 @@ contract('token contract', function(accounts) {
     saleStartTime = currentTime + 3600; // 1 hour from now
     saleEndTime = saleStartTime + 24 * 60 * 60; // 24 hours sale
 
-    return Token.new(saleStartTime,saleEndTime, tokenAdmin,  {from: tokenOwner}).then(function(result){
+    return Token.new(saleStartTime,saleEndTime, tokenAdmin, accounts[4], accounts[4], accounts[4], accounts[4], accounts[4], accounts[4],  {from: tokenOwner}).then(function(result){
         tokenContract = result;
         
         // check total supply
@@ -285,7 +318,7 @@ contract('token contract', function(accounts) {
     saleStartTime = currentTime + 3600; // 1 hour from now
     saleEndTime = saleStartTime + 24 * 60 * 60; // 24 hours sale
 
-    return Token.new(saleStartTime,saleEndTime, tokenAdmin,   {from: accounts[5]}).then(function(result){
+    return Token.new(saleStartTime,saleEndTime, tokenAdmin, accounts[4], accounts[4], accounts[4], accounts[4], accounts[4], accounts[4],   {from: accounts[5]}).then(function(result){
         erc20TokenContract = result;
         return erc20TokenContract.transfer(tokenContract.address,1e15,{from:accounts[5]});
     }).then(function(){
@@ -341,10 +374,6 @@ contract('token contract', function(accounts) {
             
         });
   });
-// TODO - check drain
-
-
-erc20TokenContract
 
 
     
