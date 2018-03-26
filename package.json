@@ -10,6 +10,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "csv-parse": "^2.0.4",
     "truffle": "^3.4.11",
     "zeppelin-solidity": "^1.2.0"
   },

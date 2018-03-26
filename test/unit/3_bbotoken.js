@@ -38,7 +38,7 @@ contract('token contract', function(accounts) {
     saleStartTime = currentTime + 3600; // 1 hour from now
     saleEndTime = saleStartTime + 24 * 60 * 60; // 24 hours sale
 
-    return Token.new(saleStartTime,saleEndTime, tokenAdmin, accounts[4], accounts[4], accounts[4], accounts[4], accounts[4], accounts[4],{from: tokenOwner}).then(function(result){
+    return Token.new(saleStartTime,saleEndTime, tokenAdmin, accounts[24], accounts[25], accounts[26], accounts[27], accounts[28], accounts[29],{from: tokenOwner}).then(function(result){
         tokenContract = result;
         
         // check total supply
@@ -103,10 +103,11 @@ contract('token contract', function(accounts) {
        });
   });
   it("set time sale in ICO", function() {
-    saleEndTime =  saleStartTime + 24 * 60 * 60;
+    
       return tokenContract.setTimeSale(saleStartTime, saleEndTime, {from:tokenAdmin}).then(function(){
           assert.fail("set time sale should fail in token sale");  
-      }).then(function(result){
+      }).catch(function(error){
+
            assert( Helpers.throwErrorMessage(error), "expected throw got " + error);
       });
   });
@@ -144,6 +145,7 @@ contract('token contract', function(accounts) {
 
   it("fast forward to token sale end", function() {
     var fastForwardTime = saleEndTime - web3.eth.getBlock('latest').timestamp + 1;
+    console.log(saleEndTime);
     return Helpers.sendPromise( 'evm_increaseTime', [fastForwardTime] ).then(function(){
         return Helpers.sendPromise( 'evm_mine', [] ).then(function(){
             var currentTime = web3.eth.getBlock('latest').timestamp;
@@ -154,12 +156,12 @@ contract('token contract', function(accounts) {
   
   it("transfer from owner after token sale", function() {
     var value = web3.toWei( 100, "finney" );
-    return tokenContract.transfer(accounts[4], value, {from:tokenOwner});
+    return tokenContract.transfer(accounts[14], value, {from:tokenOwner});
   });
   
   it("transfer more than balance", function() {
     var value = web3.toWei( 101, "finney" );
-    return tokenContract.transfer(accounts[5], value, {from:accounts[4]}).then(function(){
+    return tokenContract.transfer(accounts[5], value, {from:accounts[14]}).then(function(){
         assert.fail("transfer should fail");                
     }).catch(function(error){
         assert( Helpers.throwErrorMessage(error), "expected throw got " + error);    
@@ -168,7 +170,7 @@ contract('token contract', function(accounts) {
 
   it("transfer to address 0", function() {
     var value = web3.toWei( 1, "finney" );
-    return tokenContract.transfer("0x0000000000000000000000000000000000000000", value, {from:accounts[4]}).then(function(){
+    return tokenContract.transfer("0x0000000000000000000000000000000000000000", value, {from:accounts[14]}).then(function(){
         assert.fail("transfer should fail");                
     }).catch(function(error){
         assert( Helpers.throwErrorMessage(error), "expected throw got " + error);    
@@ -177,7 +179,7 @@ contract('token contract', function(accounts) {
 
   it("transfer to token contract", function() {
     var value = web3.toWei(1, "finney" );
-    return tokenContract.transfer(tokenContract.address, value, {from:accounts[4]}).then(function(){
+    return tokenContract.transfer(tokenContract.address, value, {from:accounts[14]}).then(function(){
         assert.fail("transfer should fail");
     }).catch(function(error){
         assert( Helpers.throwErrorMessage(error), "expected throw got " + error);    
@@ -186,8 +188,8 @@ contract('token contract', function(accounts) {
 
   it("transfer - see that balance changes", function() {
     var value = 60 * 1e15;
-    return tokenContract.transfer(accounts[5], value, {from:accounts[4]}).then(function(){
-        return tokenContract.balanceOf(accounts[4]);
+    return tokenContract.transfer(accounts[5], value, {from:accounts[14]}).then(function(){
+        return tokenContract.balanceOf(accounts[14]);
     }).then(function(result){
         assert.equal(result.valueOf(), 40 * 1e15, "unexpected balance");
         return tokenContract.balanceOf(accounts[5]);
@@ -207,7 +209,7 @@ contract('token contract', function(accounts) {
 
   it("transferfrom more than balance", function() {
     var value = 180 * 1e15; 
-    return tokenContract.transferFrom(accounts[5], accounts[4], value, {from:accounts[1]}).then(function(){
+    return tokenContract.transferFrom(accounts[5], accounts[14], value, {from:accounts[1]}).then(function(){
         assert.fail("transfer should fail");
     }).catch(function(error){
         assert( Helpers.throwErrorMessage(error), "expected throw got " + error);    
@@ -291,7 +293,7 @@ contract('token contract', function(accounts) {
     saleStartTime = currentTime + 3600; // 1 hour from now
     saleEndTime = saleStartTime + 24 * 60 * 60; // 24 hours sale
 
-    return Token.new(saleStartTime,saleEndTime, tokenAdmin, accounts[4], accounts[4], accounts[4], accounts[4], accounts[4], accounts[4],  {from: tokenOwner}).then(function(result){
+    return Token.new(saleStartTime,saleEndTime, tokenAdmin, accounts[24], accounts[25], accounts[26], accounts[27], accounts[28], accounts[29],  {from: tokenOwner}).then(function(result){
         tokenContract = result;
         
         // check total supply
@@ -318,7 +320,7 @@ contract('token contract', function(accounts) {
     saleStartTime = currentTime + 3600; // 1 hour from now
     saleEndTime = saleStartTime + 24 * 60 * 60; // 24 hours sale
 
-    return Token.new(saleStartTime,saleEndTime, tokenAdmin, accounts[4], accounts[4], accounts[4], accounts[4], accounts[4], accounts[4],   {from: accounts[5]}).then(function(result){
+    return Token.new(saleStartTime,saleEndTime, tokenAdmin, accounts[24], accounts[25], accounts[26], accounts[27], accounts[28], accounts[29],   {from: accounts[5]}).then(function(result){
         erc20TokenContract = result;
         return erc20TokenContract.transfer(tokenContract.address,1e15,{from:accounts[5]});
     }).then(function(){
@@ -374,8 +376,104 @@ contract('token contract', function(accounts) {
             
         });
   });
+   it("fast forward to token sale end", function() {
+    var fastForwardTime = saleEndTime - web3.eth.getBlock('latest').timestamp + 1;
+    console.log(saleEndTime);
+    return Helpers.sendPromise( 'evm_increaseTime', [fastForwardTime] ).then(function(){
+        return Helpers.sendPromise( 'evm_mine', [] ).then(function(){
+            var currentTime = web3.eth.getBlock('latest').timestamp;
+            if( currentTime <= saleEndTime ) assert.fail( "current time is not as expected" );
+        });
+    });
+  });
+  it("try to transfer from owner to corefounder accounts", function(){
+      return tokenContract.transfer(accounts[24], 260000000 * 1e18, {from:tokenOwner}).then(function(){
+        return tokenContract.balanceOf(accounts[24]).then(function(result){
+           assert.equal(result.valueOf(), 260000000 * 1e18,  "expected throw got " + result);
+        });
+            
+        });
+  });
+  it("try to transfer from corefounder accounts", function(){
+      return tokenContract.transfer(accounts[20], 1000000 * 1e18, {from:accounts[24]}).then(function(){
+        return tokenContract.balanceOf(accounts[20]).then(function(result){
+           assert.equal(result.valueOf(), 1000000 * 1e18,  "expected throw got " + result);
+        }).then(function(){
+          return tokenContract.maxAllowedAmount(accounts[24]);
+        }).then(function(result){
+          assert.equal(result.valueOf(), 1000000 * 1e18,"expected throw got " + result );
+        });
+            
+        });
+  });
+   it("try to transfer from corefounder accounts", function(){
+      return tokenContract.transfer(accounts[21], 8999999 * 1e18, {from:accounts[24]}).then(function(){
+        return tokenContract.balanceOf(accounts[21]).then(function(result){
+           assert.equal(result.valueOf(), 8999999 * 1e18,  "expected throw got " + result);
+        }).then(function(){
+          return tokenContract.maxAllowedAmount(accounts[24]);
+        }).then(function(result){
+          assert.equal(result.valueOf(), 9999999 * 1e18,"expected throw got " + result );
+        });
+            
+        });
+  });
+  it("try to transfer from corefounder accounts max caps", function(){
+      return tokenContract.transfer(accounts[22], 1*1e18, {from:accounts[24]}).then(function(){
+        return tokenContract.balanceOf(accounts[22]).then(function(result){
+           assert.equal(result.valueOf(), 1*1e18,  "expected throw got " + result);
+        });
+            
+        });
+  });
+   it("try to unfreeze account in frozenTime ", function(){
+      return tokenContract.selfFreeze(false, 0, {from:accounts[24]}).then(function(){
+          assert.fail("transfer from corefounder accounts over caps should fail");
+        }).catch(function(error){
+            assert( Helpers.throwErrorMessage(error), "expected throw got " + error);    
+        });
+      
+  });
+  it("try to transfer from corefounder accounts over caps", function(){
+      return tokenContract.transfer(accounts[23], 1 * 1e18, {from:accounts[24]}).then(function(){
+            assert.fail("transfer from corefounder accounts over caps should fail");
+        }).catch(function(error){
+            assert( Helpers.throwErrorMessage(error), "expected throw got " + error);    
+        });
+            
+        
+  });
+   it("fast forward to 24h after locked", function() {
+    var fastForwardTime = 24 * 3600 + 1;
+    console.log(saleEndTime);
+    return Helpers.sendPromise( 'evm_increaseTime', [fastForwardTime] ).then(function(){
+        return Helpers.sendPromise( 'evm_mine', [] ).then(function(){
 
+        });
+    });
+  });
+    it("try to unfreeze account after frozenTime ", function(){
+      return tokenContract.selfFreeze( false, 0, {from:accounts[24]}).then(function(){
+        return tokenContract.frozenAccount(accounts[24]).then(function(result){
+           assert(!result,  "expected throw got " + result);
+        });
+            
+        });
+  });
+   it("try to transfer from corefounder accounts", function(){
+      return tokenContract.transfer(accounts[10], 1000000 * 1e18, {from:accounts[24]}).then(function(){
+        return tokenContract.balanceOf(accounts[10]).then(function(result){
+           assert.equal(result.valueOf(), 1000000 * 1e18,  "expected throw got " + result);
+        }).then(function(){
+          return tokenContract.maxAllowedAmount(accounts[24]);
+        }).then(function(result){
+          assert.equal(result.valueOf(), 1000000 * 1e18,"expected throw got " + result );
+        });
+            
+        });
+  });
 
+erc20TokenContract
     
 });
 
