@@ -1,6 +1,6 @@
 var fs = require('fs'); 
 var parse = require('csv-parse');
-
+var sleep = require('sleep');
 
 var csvData=[];
 var i=0;
@@ -26,9 +26,14 @@ module.exports = function(deployer) {
     }).on('end',function() {
         
        for(var i=0;i<csvData.length;i++){
-         if(i>0)
-            BBToken.at('0xa6a30fca2effc25031fd90bf606d68f9648a632c').transferPrivateSale(csvData[i][1], web3.toWei(csvData[i][3],'ether'));
-
+            if(i>0){
+                BBToken.at('0xa6a30fca2effc25031fd90bf606d68f9648a632c').transferPrivateSale(csvData[i][1], web3.toWei(csvData[i][3],'ether'));
+                console.log(csvData[i][1]);
+            }
+           
+            if(i%10==0){
+                sleep.sleep(7*60);
+            }
         }
     });
 };

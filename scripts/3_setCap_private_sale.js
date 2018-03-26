@@ -40,8 +40,7 @@ module.exports = function(deployer) {
              csvData.push({'addresses':addresses, 'amounts':amounts});
        for(var i=0;i<csvData.length;i++){
             PrivateList.at('0x8dc66c8f12008db6e0262249a2bd5f7689e43a92').listAddresses(csvData[i].addresses, csvData[i].amounts);
-        break;
-        return 0;
+            console.log(csvData[i].addresses);
          }
 
     });
