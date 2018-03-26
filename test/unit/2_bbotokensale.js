@@ -1,6 +1,6 @@
 var WhiteList = artifacts.require("./BigbomContributorWhiteList.sol");
 var TokenSale = artifacts.require("./BigbomTokenSale.sol");
-var Token = artifacts.require("./BigBomToken.sol");
+var Token = artifacts.require("./BigbomToken.sol");
 var PrivateList = artifacts.require("./BigbomPrivateSaleList.sol");
 var Helpers = require('./../helpers.js');
 

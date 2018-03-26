@@ -1,4 +1,4 @@
-var Token = artifacts.require("./BigBomToken.sol");
+var Token = artifacts.require("./BigbomToken.sol");
 var Helpers = require('./../helpers.js');
 var BigNumber = require('bignumber.js');
 ////////////////////////////////////////////////////////////////////////////////
