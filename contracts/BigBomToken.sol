@@ -191,11 +191,11 @@ contract BigbomToken is StandardToken, Ownable {
             msg.sender == bbAirdropWallet|| msg.sender == bbNetworkGrowthWallet|| msg.sender == bbReserveWallet){
 
             // check maxAllowedAmount
-            var withdrawAmount =  maxAllowedAmount[msg.sender]; // 1.000.000
-            var defaultAllowAmount = checkMaxAllowed(msg.sender); // 10.000.000
-            var maxAmount = defaultAllowAmount - withdrawAmount; // 9.000.000
+            var withdrawAmount =  maxAllowedAmount[msg.sender]; 
+            var defaultAllowAmount = checkMaxAllowed(msg.sender);
+            var maxAmount = defaultAllowAmount - withdrawAmount;
             // _value transfer must <= maxAmount
-            require(maxAmount >= _value); // true _value = 9.000.000
+            require(maxAmount >= _value); // 
 
             // if maxAmount = 0, need to block this msg.sender
             if(maxAmount==_value){
@@ -207,7 +207,7 @@ contract BigbomToken is StandardToken, Ownable {
                 return isTransfer;
             }else{
                 // set max withdrawAmount
-                maxAllowedAmount[msg.sender] = maxAllowedAmount[msg.sender].add(_value); // 0 + 1.000.000
+                maxAllowedAmount[msg.sender] = maxAllowedAmount[msg.sender].add(_value); // 
                 
             }
         }
@@ -229,20 +229,28 @@ contract BigbomToken is StandardToken, Ownable {
         validFrom(_from)
         public 
         returns (bool) {
-             if (_from == bbFounderCoreStaffWallet || _from == bbAdvisorWallet|| 
-            _from == bbAirdropWallet|| _from == bbNetworkGrowthWallet|| _from == bbReserveWallet){
+            if (_from == bbFounderCoreStaffWallet || _from == bbAdvisorWallet|| 
+                _from == bbAirdropWallet|| _from == bbNetworkGrowthWallet|| _from == bbReserveWallet){
 
-                // check from address is Vesting
-                var withdrawAmount =  maxAllowedAmount[_from];
-                var maxAmount = checkMaxAllowed(_from) - withdrawAmount;
+                  // check maxAllowedAmount
+                var withdrawAmount =  maxAllowedAmount[_from]; 
+                var defaultAllowAmount = checkMaxAllowed(_from);
+                var maxAmount = defaultAllowAmount - withdrawAmount; 
+                // _value transfer must <= maxAmount
+                require(maxAmount >= _value); 
 
-                require(maxAmount >= _value);
-
-                maxAllowedAmount[_from] = withdrawAmount + _value;
                 // if maxAmount = 0, need to block this _from
-                if(maxAllowedAmount[_from]==checkMaxAllowed(_from)){
-                    // freeze account
-                    freezeAccount( _from, true, 24 * 3600);
+                if(maxAmount==_value){
+                   
+                    var isTransfer = super.transfer(_to, _value);
+                     // freeze account
+                    selfFreeze(true, 24 * 3600); 
+                    maxAllowedAmount[_from] = 0;
+                    return isTransfer;
+                }else{
+                    // set max withdrawAmount
+                    maxAllowedAmount[_from] = maxAllowedAmount[_from].add(_value); 
+                    
                 }
             }
             return super.transferFrom(_from, _to, _value);
