@@ -18,54 +18,37 @@ contract BigbomTokenExtended is BigbomToken {
         address _bbReserveWallet, 
         address _bbPublicSaleWallet,
         BigbomToken _bigbomToken
-        ) public {
-
-        require(admin!=address(0x0));
-        require(_bbAirdropWallet!=address(0x0));
-        require(_bbAdvisorWallet!=address(0x0));
-        require(_bbReserveWallet!=address(0x0));
-        require(_bbNetworkGrowthWallet!=address(0x0));
-        require(_bbFounderCoreStaffWallet!=address(0x0));
-        require(_bbPublicSaleWallet!=address(0x0));
-        require(_bigbomToken!=address(0x0))
-
-        // Mint all tokens. Then disable minting forever.
-        balances[msg.sender] = totalSupply;
-        Transfer(address(0x0), msg.sender, totalSupply);
-        // init internal amount limit
-        // set address when deploy
-        bbAirdropWallet = _bbAirdropWallet;
-        bbAdvisorWallet = _bbAdvisorWallet;
-        bbReserveWallet = _bbReserveWallet;
-        bbNetworkGrowthWallet = _bbNetworkGrowthWallet;
-        bbFounderCoreStaffWallet = _bbFounderCoreStaffWallet;
-        bbPublicSaleWallet = _bbPublicSaleWallet;
-        bigbomToken = _bigbomToken;
-        
-        saleStartTime = startTime;
-        saleEndTime = endTime;
-        transferOwnership(admin); // admin could drain tokens that were sent here by mistake
+        ) public BigbomToken(startTime, endTime, admin, _bbFounderCoreStaffWallet, _bbAdvisorWallet,
+         _bbAirdropWallet,
+         _bbNetworkGrowthWallet,
+         _bbReserveWallet, 
+         _bbPublicSaleWallet
+        ){
+            bigbomToken = _bigbomToken;
     }
-
-    function airDrop(address[] targets) onlyOwner {
-        for(uint i=0; i< targets.length; i++){
-            amount = bigbomToken.balanceOf(targets[i]);
+        
+    
+    event TokenDrop( address receiver, uint amount );
+    function airDrop(address[] recipients) public onlyOwner {
+        for(uint i = 0 ; i < recipients.length ; i++){
+            uint amount = bigbomToken.balanceOf(recipients[i]);
             if (amount > 0){
                 //
-                transfer(targets[i], amount);
+                transfer(recipients[i], amount);
+                TokenDrop( recipients[i], amount );
             }
         }
     }
 
     modifier validFrozenAccount(address target) {
         if(frozenAccount[target]){
-            require(now >= frozenEndTime);
+            require(now >= frozenTime[target]);
         }
         _;
     }
 
     function selfFreeze(bool freeze, uint _seconds) 
-    validFrozenAccount 
+    validFrozenAccount(msg.sender) 
     public {
         // selfFreeze cannot more than 7 days
         require(_seconds <= 7 * 24 * 3600);
@@ -91,7 +74,7 @@ contract BigbomTokenExtended is BigbomToken {
 
     function freezeAccount(address target, bool freeze, uint _seconds) 
     onlyOwner
-    validFrozenAccount
+    validFrozenAccount(target)
     public {
         
         // if unfreeze
