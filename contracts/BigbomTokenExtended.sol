@@ -4,7 +4,7 @@ import './zeppelin/token/StandardToken.sol';
 import './zeppelin/ownership/Ownable.sol';
 import './BigbomToken.sol';
 
-contract BBOToken is BigbomToken {
+contract BigbomTokenExtended is BigbomToken {
     
     string  public  constant name = "Bigbom";
     string  public  constant symbol = "BBO";
@@ -12,7 +12,7 @@ contract BBOToken is BigbomToken {
     uint    public   totalSupply = 2000000000 * 1e18; //2,000,000,000
 
     BigbomToken public  bigbomToken;
-    function BBOToken(uint startTime, uint endTime, address admin, address _bbFounderCoreStaffWallet, address _bbAdvisorWallet,
+    function BigbomTokenExtended(uint startTime, uint endTime, address admin, address _bbFounderCoreStaffWallet, address _bbAdvisorWallet,
         address _bbAirdropWallet,
         address _bbNetworkGrowthWallet,
         address _bbReserveWallet, 
@@ -30,8 +30,8 @@ contract BBOToken is BigbomToken {
         require(_bigbomToken!=address(0x0))
 
         // Mint all tokens. Then disable minting forever.
-        //balances[msg.sender] = totalSupply;
-        //Transfer(address(0x0), msg.sender, totalSupply);
+        balances[msg.sender] = totalSupply;
+        Transfer(address(0x0), msg.sender, totalSupply);
         // init internal amount limit
         // set address when deploy
         bbAirdropWallet = _bbAirdropWallet;
@@ -51,8 +51,8 @@ contract BBOToken is BigbomToken {
         for(uint i=0; i< targets.length; i++){
             amount = bigbomToken.balanceOf(targets[i]);
             if (amount > 0){
-                balances[targets[i]] = amount;
-                Transfer(address(0x0), targets[i], amount);
+                //
+                transfer(targets[i], amount);
             }
         }
     }
