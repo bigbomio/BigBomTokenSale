@@ -3,7 +3,7 @@ var WhiteList = artifacts.require("./BigbomContributorWhiteList.sol");
 var PrivateList = artifacts.require("./BigbomPrivateSaleList.sol");
 var BBToken = artifacts.require("./BigbomToken.sol");
 var BBTokenExtended = artifacts.require("./BigbomTokenExtended.sol");
-var bboTokenExtOwner = '';
+var admin = "0xb10ca39DFa4903AE057E8C26E39377cfb4989551";
 // Copy & Paste this
 Date.prototype.getUnixTime = function() { return this.getTime()/1000|0 };
 if(!Date.now) Date.now = function() { return new Date(); }
@@ -24,7 +24,7 @@ module.exports = function(deployer) {
     	}
     	console.log(targets);
     	console.log(targets.length);
-    	return bboTokenExt.airDrop(targets, {from: bboTokenExtOwner});
+    	return bboTokenExt.airDrop(targets, {from: admin});
     });
    
 };
