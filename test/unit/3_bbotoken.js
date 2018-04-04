@@ -1,9 +1,11 @@
 var Token = artifacts.require("./BigbomToken.sol");
+var TokenExtended = artifacts.require("./BigbomTokenExtended.sol");
 var Helpers = require('./../helpers.js');
 var BigNumber = require('bignumber.js');
 ////////////////////////////////////////////////////////////////////////////////
 
 var tokenContract;
+var tokenContractExtended;
 var saleStartTime;
 var saleEndTime;
 
@@ -14,7 +16,7 @@ var tokenOwnerAccount;
 var nonOwnerAccount;
 
 var totalSupply = 2000000000 * 1e18;
-
+var b1;
 
 var erc20TokenContract;
 
@@ -471,6 +473,51 @@ contract('token contract', function(accounts) {
         });
             
         });
+  });
+   it("init token TokenExtended ", function(){
+     tokenOwner = accounts[21];
+     tokenAdmin = accounts[21];
+    
+    var currentTime = web3.eth.getBlock('latest').timestamp;
+
+    saleStartTime = currentTime + 3600; // 1 hour from now
+    saleEndTime = saleStartTime + 24 * 60 * 60; // 24 hours sale
+
+    return TokenExtended.new(saleStartTime,saleEndTime, tokenAdmin, accounts[24], accounts[25], accounts[26], accounts[27], accounts[28], accounts[29], tokenContract.address,{from: tokenOwner}).then(function(result){
+        tokenContractExtended = result;
+        
+        // check total supply
+        return tokenContractExtended.totalSupply();
+    }).then(function(result){
+        console.log(result.valueOf());
+        assert.equal(result.valueOf(), totalSupply, "unexpected total supply");
+        
+        // check that owner gets all supply
+        return tokenContractExtended.balanceOf(tokenOwner);
+    }).then(function(result){
+        assert.equal(result.valueOf(), totalSupply.valueOf(), "unexpected owner balance");
+    });
+  });
+    it("airdrop token TokenExtended ", function(){
+    return tokenContractExtended.airDrop([accounts[24]],{from: tokenOwner}).then(function(result){
+  
+        return tokenContractExtended.balanceOf(accounts[24]);
+    }).then(function(result){
+        b1 = result;
+        console.log(b1.valueOf())
+        return tokenContract.balanceOf(accounts[24]);
+    }).then(function(result){
+        assert.equal(result.valueOf(), b1.valueOf(), "unexpected owner balance");
+    });
+  });
+  it("airdrop token TokenExtended 900", function(){
+    return tokenContractExtended.airDrop(accounts,{from: tokenOwner}).then(function(result){
+  
+        return tokenContractExtended.balanceOf(accounts[24]);
+    }).then(function(result){
+        
+        assert.equal(result.valueOf(),10000e18, "unexpected owner balance");
+    });
   });
 
 erc20TokenContract

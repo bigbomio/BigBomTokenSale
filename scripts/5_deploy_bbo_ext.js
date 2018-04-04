@@ -47,9 +47,9 @@ module.exports = function(deployer) {
     var privateList;
     var tokenBBO;
 
-    var privateList_address = '0x0';
-    var tokenSaleContract_address = '0x0';
-    var tokenBBO = '0x0'
+    var privateList_address = '0x47d799cddfd3839ee7fbc531dee687a981e46100';
+    var tokenSaleContract_address = '0xcb130536259a113ef4b1d46e6b2b70dde2b02674';
+    var tokenBBO = '0x65bc9d8ec0a4d5f494ce735d00a8da2bd349d158'
     
     return BBTokenExtended.new(publicSaleStartTime ,
                                 publicSaleEndTime7Plus,
