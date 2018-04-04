@@ -5,12 +5,6 @@ import './zeppelin/ownership/Ownable.sol';
 import './BigbomToken.sol';
 
 contract BigbomTokenExtended is BigbomToken {
-    
-    string  public  constant name = "Bigbom";
-    string  public  constant symbol = "BBO";
-    uint    public  constant decimals = 18;
-    uint    public   totalSupply = 2000000000 * 1e18; //2,000,000,000
-
     BigbomToken public  bigbomToken;
     function BigbomTokenExtended(uint startTime, uint endTime, address admin, address _bbFounderCoreStaffWallet, address _bbAdvisorWallet,
         address _bbAirdropWallet,
