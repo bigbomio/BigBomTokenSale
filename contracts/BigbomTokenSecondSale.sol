@@ -19,8 +19,8 @@ contract BigbomTokenSecondSale{
     BigbomContributorWhiteList public list;
 
     mapping(address=>uint)    public participated;
-    mapping(string=>uint)    public depositTx;
-    mapping(string=>uint)    public erc20Rate;
+    //mapping(string=>uint)    public depositTx;
+    mapping(string=>uint)     erc20Rate;
 
     using SafeMath for uint;
 
@@ -172,7 +172,11 @@ contract BigbomTokenSecondSale{
         sendETHToMultiSig( msg.value );
     }
 
-    function setErc20Rate(string erc20Name, uint rate) public {
+    function getErc20Rate(string erc20Name) public constant returns(uint){
+        return erc20Rate[erc20Name];
+    }
+
+    function setErc20Rate(string erc20Name, uint rate) public{
         require (msg.sender == admin);
         erc20Rate[erc20Name] = rate;
     }
@@ -187,11 +191,11 @@ contract BigbomTokenSecondSale{
         require( ! haltSale );
         require( saleStarted() );
         require( ! saleEnded() );
-
+        uint ethAmount = getErc20Rate(erc20Name) * erc20Amount;
         uint mincap = contributorMinCap(recipient);
 
-        uint maxcap = checkMaxCap(recipient, msg.value );
-        uint ethAmount = erc20Rate[erc20Name] * erc20Amount;
+        uint maxcap = checkMaxCap(recipient, ethAmount );
+        
         require (ethAmount > 0);
         uint allowValue = ethAmount;
         require( mincap > 0 );
