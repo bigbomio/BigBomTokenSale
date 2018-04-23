@@ -19,7 +19,7 @@ contract BigbomTokenSecondSale{
     BigbomContributorWhiteList public list;
 
     mapping(address=>uint)    public participated;
-    //mapping(string=>uint)    public depositTx;
+    mapping(string=>uint)     depositTxMap;
     mapping(string=>uint)     erc20Rate;
 
     using SafeMath for uint;
@@ -180,7 +180,9 @@ contract BigbomTokenSecondSale{
         require (msg.sender == admin);
         erc20Rate[erc20Name] = rate;
     }
-
+    function getDepositTxMap(string _tx) public constant returns(uint){
+        return depositTxMap[_tx];
+    }
     event Erc20Buy( address _buyer, uint _tokens, uint _payedWei, uint _bonus, string depositTx );
 
     event Erc20Refund( address _buyer, uint _erc20RefundAmount );
@@ -195,7 +197,7 @@ contract BigbomTokenSecondSale{
         uint mincap = contributorMinCap(recipient);
 
         uint maxcap = checkMaxCap(recipient, ethAmount );
-        
+        require (getDepositTxMap(depositTx) == 0);
         require (ethAmount > 0);
         uint allowValue = ethAmount;
         require( mincap > 0 );
@@ -220,6 +222,8 @@ contract BigbomTokenSecondSale{
         
         recievedTokens = recievedTokens.add(bonus);
         assert( token.transfer( recipient, recievedTokens ) );
+        // set tx
+        depositTxMap[depositTx] = ethAmount;
         //
 
         Erc20Buy( recipient, recievedTokens, allowValue, bonus, depositTx);
