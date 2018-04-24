@@ -1,6 +1,6 @@
 pragma solidity ^0.4.19;
 
-import './BigbomToken.sol';
+import './BigbomTokenExtended.sol';
 import './zeppelin/ownership/Ownable.sol';
 import './BigbomContributorWhiteList.sol';
 import './BigbomPrivateSaleList.sol';
@@ -9,7 +9,7 @@ import './zeppelin/math/SafeMath.sol';
 contract BigbomTokenSecondSale{
     address             public admin;
     address             public bigbomMultiSigWallet;
-    BigbomToken         public token;
+    BigbomTokenExtended         public token;
     uint                public raisedWei;
     bool                public haltSale;
     uint                public openSaleStartTime;
@@ -29,7 +29,7 @@ contract BigbomTokenSecondSale{
                               BigbomContributorWhiteList _whilteListContract,
                               uint _publicSaleStartTime,
                               uint _publicSaleEndTime,
-                              BigbomToken _token) public       
+                              BigbomTokenExtended _token) public       
     {
         require (_publicSaleStartTime < _publicSaleEndTime);
         require (_admin != address(0x0));
@@ -173,7 +173,7 @@ contract BigbomTokenSecondSale{
     }
 
     function getErc20Rate(string erc20Name) public constant returns(uint){
-        return erc20Rate[erc20Name];
+        return erc20Rate[erc20Name].div(1e18);
     }
 
     function setErc20Rate(string erc20Name, uint rate) public{
@@ -210,7 +210,7 @@ contract BigbomTokenSecondSale{
             //require (allowValue >= mincap);
             // send event refund
             // msg.sender.transfer( ethAmount.sub( maxcap ) );
-            uint erc20RefundAmount = ethAmount.sub( maxcap ).div(erc20Rate[erc20Name]);
+            uint erc20RefundAmount = ethAmount.sub( maxcap ).div(erc20Rate[erc20Name]/1e18);
             Erc20Refund(recipient, erc20RefundAmount);
         }
 
