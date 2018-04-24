@@ -82,14 +82,8 @@ contract BigbomTokenSecondSale{
 
 
 
-    function getBonus(uint _tokens) public view returns (uint){
-        if (now > openSaleStartTime && now <= (openSaleStartTime+3 days)){
-            return _tokens.mul(10).div(100);
-        }
-        else
-        {
-            return 0;
-        }
+    function getBonus(uint _tokens) public pure returns (uint){
+        return _tokens.mul(10).div(100);
     }
 
     event Buy( address _buyer, uint _tokens, uint _payedWei, uint _bonus );
@@ -180,6 +174,7 @@ contract BigbomTokenSecondSale{
         require (msg.sender == admin);
         erc20Rate[erc20Name] = rate;
     }
+
     function getDepositTxMap(string _tx) public constant returns(uint){
         return depositTxMap[_tx];
     }
@@ -210,7 +205,7 @@ contract BigbomTokenSecondSale{
             //require (allowValue >= mincap);
             // send event refund
             // msg.sender.transfer( ethAmount.sub( maxcap ) );
-            uint erc20RefundAmount = ethAmount.sub( maxcap ).mul(1e18).div(erc20Rate[erc20Name]);
+            uint erc20RefundAmount = ethAmount.sub( maxcap ).mul(1e18).div(getErc20Rate(erc20Name));
             Erc20Refund(recipient, erc20RefundAmount);
         }
 
