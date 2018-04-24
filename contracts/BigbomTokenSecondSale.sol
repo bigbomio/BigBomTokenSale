@@ -173,7 +173,7 @@ contract BigbomTokenSecondSale{
     }
 
     function getErc20Rate(string erc20Name) public constant returns(uint){
-        return erc20Rate[erc20Name].div(1e18);
+        return erc20Rate[erc20Name];
     }
 
     function setErc20Rate(string erc20Name, uint rate) public{
@@ -193,7 +193,7 @@ contract BigbomTokenSecondSale{
         require( ! haltSale );
         require( saleStarted() );
         require( ! saleEnded() );
-        uint ethAmount = getErc20Rate(erc20Name) * erc20Amount;
+        uint ethAmount = getErc20Rate(erc20Name) * erc20Amount / 1e18;
         uint mincap = contributorMinCap(recipient);
 
         uint maxcap = checkMaxCap(recipient, ethAmount );
@@ -210,7 +210,7 @@ contract BigbomTokenSecondSale{
             //require (allowValue >= mincap);
             // send event refund
             // msg.sender.transfer( ethAmount.sub( maxcap ) );
-            uint erc20RefundAmount = ethAmount.sub( maxcap ).div(erc20Rate[erc20Name]/1e18);
+            uint erc20RefundAmount = ethAmount.sub( maxcap ).mul(1e18).div(erc20Rate[erc20Name]);
             Erc20Refund(recipient, erc20RefundAmount);
         }
 
