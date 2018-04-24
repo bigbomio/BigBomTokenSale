@@ -1,11 +1,11 @@
 const Web3 = require('web3');
 var contract = require('truffle-contract');
 
-var web3 = new Web3(new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/_ws'));
+var web3 = new Web3(new Web3.providers.WebsocketProvider('wss://rinkeby.infura.io/_ws'));
 
 var bboTokenSaleAddressOwner = '0xb10ca39DFa4903AE057E8C26E39377cfb4989551';
-var tomoCoinAddress = '0x8ba166ae1fbbb2658aba37229161ec2f03786f8f';
-var bboTokenSaleAddress = '';
+var tomoCoinAddress = '0x4147407d405913fabcd5d2b6d1b18a4687bf024d';
+var bboTokenSaleAddress = '0xa4B423FA6316D8448919cED452b47b2dE8E736cc';
 var tomoReceivedAddress = '0x4E6B0EA30F13FF8A1aD799f70fd18947De575e5d';
 var tomoArtifacts = require('../abi/tomo.json');
 var TomoCoin = contract(tomoArtifacts);
@@ -33,8 +33,7 @@ var newTransferEvent = tomoContract.events.Transfer({from: lastestBlock, address
     		var tx = BBOTokenSale.erc20Buy( args["from"], args["value"], "TOMO", args["_txn"], {from:bboTokenSaleAddressOwner});
     	}
     });
-    //var tx = BBOTokenSale.erc20Buy( args["from"], args["value"], "TOMO", args["_txn"], {from:bboTokenSaleAddressOwner});
-    //console.log(tx);
+    
   }
 }).on('changed', function(event){
 	    // remove event from local database
