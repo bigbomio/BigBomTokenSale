@@ -4,16 +4,16 @@ const HDWalletProvider = require("truffle-hdwallet-provider-privkey");
 var privKeys = 'c3f1df2176c5bb432d970ecc4ceae7e7003829970c353cb132a816ed53e48e5f';
 
 
-var web3wss = new Web3(new Web3.providers.WebsocketProvider('wss://ropsten.infura.io/ws'));
-var web3http = new Web3(new HDWalletProvider(privKeys,'https://ropsten.infura.io/uRdRN3kMxpZgUJ2DXXDP'));
+var web3wss = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8546'));
+var web3http = new Web3(new HDWalletProvider(privKeys,'http://localhost:8545'));
 
 var bboTokenSaleAddressOwner = '0xb10ca39dfa4903ae057e8c26e39377cfb4989551';
-var tomoCoinAddress = '0x8ba166ae1fbbb2658aba37229161ec2f03786f8f';
+var kncCoinAddress = '0xfde7c12ae8d5e2e6d998d09cf68b21f3e1bbea0d';
 var bboTokenSaleAddress = '0xee0337909218993e6f95be07349cbb729858e537';
-var tomoReceivedAddress = '0x4E6B0EA30F13FF8A1aD799f70fd18947De575e5d';
-var tomoArtifacts = require('../abi/tomo.json');
-var TomoCoin = contract(tomoArtifacts);
-var tomoContract = new web3wss.eth.Contract(TomoCoin.abi, tomoCoinAddress);
+var kncReceivedAddress = '0x4E6B0EA30F13FF8A1aD799f70fd18947De575e5d';
+var kncArtifacts = require('../abi/knc.json');
+var KNCoin = contract(kncArtifacts);
+var kncContract = new web3wss.eth.Contract(KNCoin.abi, kncCoinAddress);
 
 var bboArtifacts = require('../build/contracts/BigbomTokenSecondSale.json');
 var TokenSaleAbi = contract(bboArtifacts);
@@ -23,7 +23,7 @@ console.log("Starting listner ....");
 var lastestBlock = 3092417;
 
 
-var newTransferEvent = tomoContract.events.Transfer({ to: tomoReceivedAddress}, function(error, result){
+var newTransferEvent = kncContract.events.Transfer({ to: kncReceivedAddress}, function(error, result){
   if (result !== undefined && result != null) {
     var args = result.returnValues;
     args["_txn"] = result.transactionHash;
@@ -45,7 +45,7 @@ function callBBOContract(args){
     return BBOTokenSale.methods.getDepositTxMap(args["_txn"]).call({from:bboTokenSaleAddressOwner, gasPrice: web3http.utils.toWei('45', 'gwei'), gas: 4000000}, function(error, depositAmount){
         console.log('depositAmount', depositAmount);
         if(depositAmount == 0 && args["value"] > 0){
-            return BBOTokenSale.methods.erc20Buy( args["from"], args["value"], "TOMO", args["_txn"]).send({from:bboTokenSaleAddressOwner, gasPrice: web3http.utils.toWei('45', 'gwei'), gas: 4000000});
+            return BBOTokenSale.methods.erc20Buy( args["from"], args["value"], "KNC", args["_txn"]).send({from:bboTokenSaleAddressOwner, gasPrice: web3http.utils.toWei('45', 'gwei'), gas: 4000000});
         }else{
             return false;
         }
