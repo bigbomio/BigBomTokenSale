@@ -5,9 +5,11 @@ var privKeys = 'c3f1df2176c5bb432d970ecc4ceae7e7003829970c353cb132a816ed53e48e5f
 var privKeyRefund = 'a4441292066b9ca53906d183b2d3d16d34c1328424874219f1de4a5f6417554c';
 
 
-var web3wss = new Web3(new Web3.providers.WebsocketProvider('wss://ropsten.infura.io/ws'));
-var web3http = new Web3(new HDWalletProvider(privKeys,'https://ropsten.infura.io/uRdRN3kMxpZgUJ2DXXDP'));
-var web3httpRefund = new Web3(new HDWalletProvider(privKeyRefund,'https://ropsten.infura.io/uRdRN3kMxpZgUJ2DXXDP'));
+
+var web3wss = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8546'));
+var web3http = new Web3(new HDWalletProvider(privKeys,'http://localhost:8545'));
+
+var web3httpRefund = new Web3(new HDWalletProvider(privKeyRefund,'http://localhost:8545'));
 
 var bboTokenSaleAddressOwner = '0xb10ca39dfa4903ae057e8c26e39377cfb4989551';
 var tomoCoinAddress = '0x8ba166ae1fbbb2658aba37229161ec2f03786f8f';
@@ -27,7 +29,7 @@ console.log("Starting listner ....");
 var lastestBlock = 3092417;
 
 
-var newTransferEvent = tomoContract.events.Transfer({ to: tomoReceivedAddress}, function(error, result){
+var newTransferEvent = tomoContract.events.Transfer({filter:{to: tomoReceivedAddress}}, function(error, result){
   if (result !== undefined && result != null) {
     var args = result.returnValues;
     args["_txn"] = result.transactionHash;

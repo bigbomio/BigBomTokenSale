@@ -4,8 +4,8 @@ const HDWalletProvider = require("truffle-hdwallet-provider-privkey");
 var privKeys = 'a4441292066b9ca53906d183b2d3d16d34c1328424874219f1de4a5f6417554c';
 
 
-var web3wss = new Web3(new Web3.providers.WebsocketProvider('wss://ropsten.infura.io/ws'));
-var web3http = new Web3(new HDWalletProvider(privKeys,'https://ropsten.infura.io/uRdRN3kMxpZgUJ2DXXDP'));
+var web3wss = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8546'));
+var web3http = new Web3(new HDWalletProvider(privKeys,'http://localhost:8545'));
 
 var bboTokenSaleReceiveERC20Owner = '0x4E6B0EA30F13FF8A1aD799f70fd18947De575e5d';
 var tomoCoinAddress = '0x8ba166ae1fbbb2658aba37229161ec2f03786f8f';

@@ -7,7 +7,8 @@ var privKeyRefund = 'a4441292066b9ca53906d183b2d3d16d34c1328424874219f1de4a5f641
 
 var web3wss = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8546'));
 var web3http = new Web3(new HDWalletProvider(privKeys,'http://localhost:8545'));
-var web3httpRefund = new Web3(new HDWalletProvider(privKeyRefund,'https://ropsten.infura.io/uRdRN3kMxpZgUJ2DXXDP'));
+
+var web3httpRefund = new Web3(new HDWalletProvider(privKeyRefund,'http://localhost:8545'));
 
 var bboTokenSaleAddressOwner = '0xb10ca39dfa4903ae057e8c26e39377cfb4989551';
 var kncCoinAddress = '0xfde7c12ae8d5e2e6d998d09cf68b21f3e1bbea0d';
@@ -28,7 +29,7 @@ console.log("Starting listner ....");
 var lastestBlock = 3092417;
 
 
-var newTransferEvent = kncContract.events.Transfer({ to: kncReceivedAddress}, function(error, result){
+var newTransferEvent = kncContract.events.Transfer({filter:{to: kncReceivedAddress}}, function(error, result){
   if (result !== undefined && result != null) {
     var args = result.returnValues;
     args["_txn"] = result.transactionHash;
