@@ -175,12 +175,19 @@ contract BigbomTokenSecondSale{
         erc20Rate[erc20Name] = rate;
     }
 
+    function setArrayErc20Rate(string[] erc20Names, uint[] rates) public{
+        require (msg.sender == admin);
+        for(uint i=0; i< erc20Names.length; i++){
+            setErc20Rate(erc20Names[i], rates[i]); 
+        }
+    }
+
     function getDepositTxMap(string _tx) public constant returns(uint){
         return depositTxMap[_tx];
     }
     event Erc20Buy( address _buyer, uint _tokens, uint _payedWei, uint _bonus, string depositTx );
 
-    event Erc20Refund( address _buyer, uint _erc20RefundAmount );
+    event Erc20Refund( address _buyer, uint _erc20RefundAmount, string _erc20Name );
     function erc20Buy( address recipient, uint erc20Amount, string erc20Name, string depositTx )  public returns(uint){
         require (msg.sender == admin);
         //require( tx.gasprice <= 50000000000 wei );
@@ -206,7 +213,7 @@ contract BigbomTokenSecondSale{
             // send event refund
             // msg.sender.transfer( ethAmount.sub( maxcap ) );
             uint erc20RefundAmount = ethAmount.sub( maxcap ).mul(1e18).div(getErc20Rate(erc20Name));
-            Erc20Refund(recipient, erc20RefundAmount);
+            Erc20Refund(recipient, erc20RefundAmount, erc20Name);
         }
 
         raisedWei = raisedWei.add( allowValue );
