@@ -175,13 +175,6 @@ contract BigbomTokenSecondSale{
         erc20Rate[erc20Name] = rate;
     }
 
-    function setArrayErc20Rate(string[] erc20Names, uint[] rates) public{
-        require (msg.sender == admin);
-        for(uint i=0; i< erc20Names.length; i++){
-            setErc20Rate(erc20Names[i], rates[i]); 
-        }
-    }
-
     function getDepositTxMap(string _tx) public constant returns(uint){
         return depositTxMap[_tx];
     }
