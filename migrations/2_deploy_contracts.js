@@ -1,21 +1,22 @@
 var TokenSale = artifacts.require("./BigbomTokenSale.sol");
 var WhiteList = artifacts.require("./BigbomContributorWhiteList.sol");
 var PrivateList = artifacts.require("./BigbomPrivateSaleList.sol");
-var BBToken = artifacts.require("./BigBomToken.sol");
+var BBToken = artifacts.require("./BigbomTokenExtended.sol");
 
 // Copy & Paste this
 Date.prototype.getUnixTime = function() { return this.getTime()/1000|0 };
 if(!Date.now) Date.now = function() { return new Date(); }
 Date.time = function() { return Date.now().getUnixTime(); }
 
+const Promise = require('bluebird');
 
 
 
 var tokenSaleContract;
 
 module.exports = function(deployer) {
-    var admin = "0x6D58F2848156A8B3Bd18cB9Ce4392a876E558eC9";
-    var whiteListOwner = "0x6D58F2848156A8B3Bd18cB9Ce4392a876E558eC9";
+    var admin = "0xb10ca39dfa4903ae057e8c26e39377cfb4989551";
+    var whiteListOwner = "0xb10ca39dfa4903ae057e8c26e39377cfb4989551";
     var multisig = "0x06e7085946fd86db9715aabb936f772165b613c2";
     var bbFounderCoreStaffWallet = "0x15ae3b540d994ab3bfe59fe2b46c1d459182cc91";
     var bbAdvisorWallet= "0x37df3ec0c17a3fbff8bf63468f59232ec20854e8";
@@ -35,7 +36,7 @@ module.exports = function(deployer) {
     var bbtokenInstance;
     var premintedSupply = web3.toWei( 1675000000, "ether");
 
-    var currentTime = web3.eth.getBlock('latest').timestamp;
+    var currentTime = 1522996396;
 
     var publicSaleStartTime = currentTime + 2 * 3600;//after 60 mins
 
@@ -50,57 +51,79 @@ module.exports = function(deployer) {
     var privateList;
     var tokenBBO;
 
+    setTimeout(function(){
+        return WhiteList.new().then(function(instance){
+            whiteListInstance = instance;
+            
+        }).then(function(){
+            return BBToken.new(publicSaleStartTime ,
+                                    publicSaleEndTime7Plus,
+                                    admin, 
+                                    bbFounderCoreStaffWallet,
+                                    bbAdvisorWallet,
+                                    bbAirdropWallet,
+                                    bbNetworkGrowthWallet,
+                                    bbReserveWallet,
+                                    bbPublicSaleWallet,
+                                    '0x0'
+                                      );
+        }).then(function(token){
+            tokenBBO = token;
+            
 
+            return tokenBBO.transfer( bbFounderCoreStaffWallet, founderCoreStaffAmount );
+        }).then(function(){
 
-    return WhiteList.new({from:whiteListOwner}).then(function(instance){
-        whiteListInstance = instance;
-        console.log('whiteListInstance Contract: ', whiteListInstance.address);
-    }).then(function(){
-        return BBToken.new(publicSaleStartTime ,
-                                publicSaleEndTime7Plus,
-                                admin, 
-                                bbFounderCoreStaffWallet,
-                                bbAdvisorWallet,
-                                bbAirdropWallet,
-                                bbNetworkGrowthWallet,
-                                bbReserveWallet,
-                                bbPublicSaleWallet
-                                  );
-    }).then(function(token){
-        tokenBBO = token;
-        console.log('tokenBBO Contract: ', tokenBBO.address);
+            return tokenBBO.transfer( bbAdvisorWallet, advisorAmount );
+        }).then(function(){
+            return tokenBBO.transfer( bbAirdropWallet, bountyAmount );
+        }).then(function(){
+            return tokenBBO.transfer( bbNetworkGrowthWallet, networkGrowthAmount );
+        }).then(function(){
+            return tokenBBO.transfer( bbReserveWallet, reserveAmount );
+        }).then(function(){
+            return tokenBBO.transfer( bbPublicSaleWallet, publicSaleAmount );
+        }).then(function(){
+            
+            return PrivateList.new();
+        }).then(function(_privateList){
+            privateList = _privateList;
+            return tokenBBO.setPrivateList(privateList.address); 
+            //todo Lock account
+        }).then(function(){
+            return tokenBBO.freezeAccount( bbFounderCoreStaffWallet, true, 1800 );
+        }).then(function(){
+            return tokenBBO.freezeAccount( bbAdvisorWallet, true, 1800 );
+        }).then(function(){
+            return tokenBBO.freezeAccount( bbAirdropWallet, true, 1800 );
+        }).then(function(){
+            return tokenBBO.freezeAccount( bbNetworkGrowthWallet, true, 1800 );
+        }).then(function(){
+            return tokenBBO.freezeAccount( bbReserveWallet, true, 1800 );
+        }).then(function(){
+            return TokenSale.new( admin,
+                                        multisig,
+                                        whiteListInstance.address,
+                                        publicSaleStartTime,
+                                        publicSaleEndTime, tokenBBO.address);                     
+        }).then(function(result){
+            tokenSaleContract = result;
+                    
+            
+            return tokenBBO.setTokenSaleContract(tokenSaleContract.address);
+        }).then(function(){
+            return tokenBBO.transfer( tokenSaleContract.address,  web3.toWei( 25000000, "ether") );
+            
+        }).catch(function(err){
+            console.log('err', err);
+        }).finally(function(){
+            console.log('whiteListInstance Contract: ', whiteListInstance.address);
+            console.log('tokenBBO Contract: ', tokenBBO.address);
+            console.log('PrivateList Contract: ', privateList.address);
+            console.log('TokenSale Contract: ', tokenSaleContract.address);
+        });
+    }, 3000);
 
-        tokenBBO.transfer( bbFounderCoreStaffWallet, founderCoreStaffAmount );
-        tokenBBO.transfer( bbAdvisorWallet, advisorAmount );
-        tokenBBO.transfer( bbAirdropWallet, bountyAmount );
-        tokenBBO.transfer( bbNetworkGrowthWallet, networkGrowthAmount );
-        tokenBBO.transfer( bbReserveWallet, reserveAmount );
-        tokenBBO.transfer( bbPublicSaleWallet, publicSaleAmount );
-
-        
-        return PrivateList.new();
-    }).then(function(privateList){
-        console.log('PrivateList Contract: ', privateList.address);
-        tokenBBO.setPrivateList(privateList.address); 
-        //todo Lock account
-        tokenBBO.freezeAccount( bbFounderCoreStaffWallet, true, 1800 );
-        tokenBBO.freezeAccount( bbAdvisorWallet, true, 1800 );
-        tokenBBO.freezeAccount( bbAirdropWallet, true, 1800 );
-        tokenBBO.freezeAccount( bbNetworkGrowthWallet, true, 1800 );
-        tokenBBO.freezeAccount( bbReserveWallet, true, 1800 );
-
-        return TokenSale.new( admin,
-                                    multisig,
-                                    whiteListInstance.address,
-                                    publicSaleStartTime,
-                                    publicSaleEndTime, tokenBBO.address);                     
-    }).then(function(result){
-        tokenSaleContract = result;
-                
-        console.log('TokenSale Contract: ', tokenSaleContract.address);
-        tokenBBO.setTokenSaleContract(tokenSaleContract.address);
-        tokenBBO.transfer( tokenSaleContract.address,  web3.toWei( 25000000, "ether") );
-        
-    });
+    
 
 };

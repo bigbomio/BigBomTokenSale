@@ -21,7 +21,7 @@ var kncContract = new web3wss.eth.Contract(KNCoin.abi, kncCoinAddress);
 var kncContractRefund = new web3httpRefund.eth.Contract(KNCoin.abi, kncCoinAddress);
 
 
-var bboArtifacts = require('../build/contracts/BigbomTokenSecondSale.json');
+var bboArtifacts = require('../build/contracts/BigbomCrowdSale.json');
 var TokenSaleAbi = contract(bboArtifacts);
 var BBOTokenSale = new web3http.eth.Contract(TokenSaleAbi.abi, bboTokenSaleAddress);
 

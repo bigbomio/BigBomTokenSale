@@ -21,7 +21,7 @@ var TomoCoin = contract(tomoArtifacts);
 var tomoContract = new web3wss.eth.Contract(TomoCoin.abi, tomoCoinAddress);
 var tomoContractRefund = new web3httpRefund.eth.Contract(TomoCoin.abi, tomoCoinAddress);
 
-var bboArtifacts = require('../build/contracts/BigbomTokenSecondSale.json');
+var bboArtifacts = require('../build/contracts/BigbomCrowdSale.json');
 var TokenSaleAbi = contract(bboArtifacts);
 var BBOTokenSale = new web3http.eth.Contract(TokenSaleAbi.abi, bboTokenSaleAddress);
 

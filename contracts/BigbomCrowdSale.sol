@@ -6,7 +6,7 @@ import './BigbomContributorWhiteList.sol';
 import './BigbomPrivateSaleList.sol';
 import './zeppelin/math/SafeMath.sol';
 
-contract BigbomTokenSecondSale{
+contract BigbomCrowdSale{
     address             public admin;
     address             public bigbomMultiSigWallet;
     BigbomTokenExtended         public token;
@@ -24,7 +24,7 @@ contract BigbomTokenSecondSale{
 
     using SafeMath for uint;
 
-    function BigbomTokenSecondSale( address _admin,
+    function BigbomCrowdSale( address _admin,
                               address _bigbomMultiSigWallet,
                               BigbomContributorWhiteList _whilteListContract,
                               uint _publicSaleStartTime,

@@ -9,6 +9,7 @@ var web3http = new Web3(new HDWalletProvider(privKeys,'http://localhost:8545'));
 
 var bboTokenSaleReceiveERC20Owner = '0x4E6B0EA30F13FF8A1aD799f70fd18947De575e5d';
 var tomoCoinAddress = '0x8ba166ae1fbbb2658aba37229161ec2f03786f8f';
+var kncCoinAddress = '0xfde7c12ae8d5e2e6d998d09cf68b21f3e1bbea0d';
 var bboTokenSaleAddress = '0xee0337909218993e6f95be07349cbb729858e537';
 
 var tomoArtifacts = require('../abi/tomo.json');
@@ -19,7 +20,7 @@ var kncArtifacts = require('../abi/knc.json');
 var KNCoin = contract(kncArtifacts);
 var kncContract = new web3http.eth.Contract(KNCoin.abi, kncCoinAddress);
 
-var bboArtifacts = require('../build/contracts/BigbomTokenSecondSale.json');
+var bboArtifacts = require('../build/contracts/BigbomCrowdSale.json');
 var TokenSaleAbi = contract(bboArtifacts);
 var BBOTokenSale = new web3wss.eth.Contract(TokenSaleAbi.abi, bboTokenSaleAddress);
 
