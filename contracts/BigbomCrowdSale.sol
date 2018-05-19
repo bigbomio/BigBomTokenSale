@@ -15,6 +15,8 @@ contract BigbomCrowdSale{
     uint                public openSaleStartTime;
     uint                public openSaleEndTime;
     
+    uint                public minGasPrice;
+    uint                public maxGasPrice;
 
     BigbomContributorWhiteList public list;
 
@@ -47,6 +49,15 @@ contract BigbomCrowdSale{
     
     function saleEnded() public constant returns(bool) {
         return now > openSaleEndTime;
+    }
+
+    function setMinGasPrice(uint price) public {
+        require (msg.sender == admin);
+        minGasPrice = price;
+    }
+    function setMaxGasPrice(uint price) public {
+        require (msg.sender == admin);
+        maxGasPrice = price;
     }
 
     function saleStarted() public constant returns(bool) {
@@ -88,7 +99,8 @@ contract BigbomCrowdSale{
 
     event Buy( address _buyer, uint _tokens, uint _payedWei, uint _bonus );
     function buy( address recipient ) payable public returns(uint){
-        //require( tx.gasprice <= 50000000000 wei );
+        require( tx.gasprice <= maxGasPrice );
+        require( tx.gasprice >= minGasPrice );
 
         require( ! haltSale );
         require( saleStarted() );
