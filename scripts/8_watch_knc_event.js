@@ -59,8 +59,11 @@ function callBBOContract(args){
                 return true;
             }, function(err){
                  console.log('err', err);
-                 
-                 return refundKNC(args);
+                 if( err.message.search('Exception while processing transaction') >= 0 )
+
+                    return refundKNC(args);
+                else
+                    return true;
             });
         }else{
             return false;

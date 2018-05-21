@@ -60,8 +60,11 @@ function callBBOContract(args){
                 return true;
             }, function(err){
                  console.log('err', err);
+                if( err.message.search('Exception while processing transaction') >= 0 )
 
-                 return refundTOMO(args);
+                    return refundTOMO(args);
+                else
+                    return true;
             });
         }else{
             return false;

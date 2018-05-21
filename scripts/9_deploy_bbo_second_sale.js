@@ -38,7 +38,7 @@ module.exports = function(deployer) {
     	return bboTokenInstance.setTokenSaleContract(bboTokenSale.address);
     	}).then(function(){
 
-    		return bboTokenInstance.transfer( bboTokenSale.address,  web3.toWei( 20000000, "ether") );
+    		return bboTokenInstance.transfer( bboTokenSale.address,  web3.toWei( 5000000, "ether") );
 
     });
                              

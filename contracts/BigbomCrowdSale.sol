@@ -76,7 +76,7 @@ contract BigbomCrowdSale{
         uint cap = list.getMaxCap( contributor );
         if( cap == 0 ) return 0;
         uint remainedCap = cap.sub( participated[ contributor ] );
-        if(now > 2 * 24 * 60 * 60){
+        if(now > openSaleStartTime + 900){
             return amountInWei;
         }
         if( remainedCap > amountInWei ) return amountInWei;
@@ -118,7 +118,7 @@ contract BigbomCrowdSale{
         // fail if msg.value < mincap
         require (msg.value >= mincap);
         // send to msg.sender, not to recipient if value > maxcap
-        if(now <= openSaleStartTime + 2* 24 * 60 * 60) {
+        if(now <= openSaleStartTime + 900) {
             if( msg.value > maxcap ) {
                 allowValue = maxcap;
                 //require (allowValue >= mincap);
@@ -218,7 +218,7 @@ contract BigbomCrowdSale{
         // fail if msg.value < mincap
         require (ethAmount >= mincap);
         // send to msg.sender, not to recipient if value > maxcap
-        if(now <= openSaleStartTime + 2 * 24 * 60 * 60) {
+        if(now <= openSaleStartTime + 900) {
             if( ethAmount > maxcap  ) {
                 allowValue = maxcap;
                 //require (allowValue >= mincap);
