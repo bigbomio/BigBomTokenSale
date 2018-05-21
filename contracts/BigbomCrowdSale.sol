@@ -81,7 +81,7 @@ contract BigbomCrowdSale{
     }
 
     function checkMaxCap( address contributor, uint amountInWei ) internal returns(uint) {
-        if( now > ( openSaleStartTime + 1800))
+        if( now > ( openSaleStartTime + 2 * 24 * 3600))
             return 100e18;
         else{
             uint result = contributorMaxCap( contributor, amountInWei );
@@ -120,7 +120,7 @@ contract BigbomCrowdSale{
         // fail if msg.value < mincap
         require (msg.value >= mincap);
         // send to msg.sender, not to recipient if value > maxcap
-        if(now <= openSaleStartTime + 1800) {
+        if(now <= openSaleStartTime + 2 * 24 * 3600) {
             if( msg.value > maxcap ) {
                 allowValue = maxcap;
                 //require (allowValue >= mincap);
@@ -220,7 +220,7 @@ contract BigbomCrowdSale{
         // fail if msg.value < mincap
         require (ethAmount >= mincap);
         // send to msg.sender, not to recipient if value > maxcap
-        if(now <= openSaleStartTime + 1800) {
+        if(now <= openSaleStartTime + 2 * 24 * 3600) {
             if( ethAmount > maxcap  ) {
                 allowValue = maxcap;
                 //require (allowValue >= mincap);

@@ -216,7 +216,7 @@
         "id": 2,
         "nodeType": "ImportDirective",
         "scope": 153,
-        "sourceUnit": 2425,
+        "sourceUnit": 2438,
         "src": "26:42:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -230,10 +230,10 @@
               "id": 3,
               "name": "Ownable",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2424,
+              "referencedDeclaration": 2437,
               "src": "109:7:0",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Ownable_$2424",
+                "typeIdentifier": "t_contract$_Ownable_$2437",
                 "typeString": "contract Ownable"
               }
             },
@@ -243,7 +243,7 @@
           }
         ],
         "contractDependencies": [
-          2424
+          2437
         ],
         "contractKind": "contract",
         "documentation": null,
@@ -251,7 +251,7 @@
         "id": 152,
         "linearizedBaseContracts": [
           152,
-          2424
+          2437
         ],
         "name": "BigbomContributorWhiteList",
         "nodeType": "ContractDefinition",
@@ -568,7 +568,7 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2718,
+                      "referencedDeclaration": 2731,
                       "src": "538:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -697,7 +697,7 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2718,
+                      "referencedDeclaration": 2731,
                       "src": "575:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -917,7 +917,7 @@
                         "name": "now",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2717,
+                        "referencedDeclaration": 2730,
                         "src": "734:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -989,7 +989,7 @@
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
-                  "referencedDeclaration": 2404,
+                  "referencedDeclaration": 2417,
                   "src": "518:9:0",
                   "typeDescriptions": {
                     "typeIdentifier": "t_modifier$__$",
@@ -1199,7 +1199,7 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2718,
+                      "referencedDeclaration": 2731,
                       "src": "908:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -1317,7 +1317,7 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2718,
+                      "referencedDeclaration": 2731,
                       "src": "959:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -1688,7 +1688,7 @@
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
-                  "referencedDeclaration": 2404,
+                  "referencedDeclaration": 2417,
                   "src": "888:9:0",
                   "typeDescriptions": {
                     "typeIdentifier": "t_modifier$__$",
@@ -2131,7 +2131,7 @@
         "id": 2,
         "nodeType": "ImportDirective",
         "scope": 153,
-        "sourceUnit": 2425,
+        "sourceUnit": 2438,
         "src": "26:42:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -2145,10 +2145,10 @@
               "id": 3,
               "name": "Ownable",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2424,
+              "referencedDeclaration": 2437,
               "src": "109:7:0",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Ownable_$2424",
+                "typeIdentifier": "t_contract$_Ownable_$2437",
                 "typeString": "contract Ownable"
               }
             },
@@ -2158,7 +2158,7 @@
           }
         ],
         "contractDependencies": [
-          2424
+          2437
         ],
         "contractKind": "contract",
         "documentation": null,
@@ -2166,7 +2166,7 @@
         "id": 152,
         "linearizedBaseContracts": [
           152,
-          2424
+          2437
         ],
         "name": "BigbomContributorWhiteList",
         "nodeType": "ContractDefinition",
@@ -2483,7 +2483,7 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2718,
+                      "referencedDeclaration": 2731,
                       "src": "538:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -2612,7 +2612,7 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2718,
+                      "referencedDeclaration": 2731,
                       "src": "575:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -2832,7 +2832,7 @@
                         "name": "now",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2717,
+                        "referencedDeclaration": 2730,
                         "src": "734:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -2904,7 +2904,7 @@
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
-                  "referencedDeclaration": 2404,
+                  "referencedDeclaration": 2417,
                   "src": "518:9:0",
                   "typeDescriptions": {
                     "typeIdentifier": "t_modifier$__$",
@@ -3114,7 +3114,7 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2718,
+                      "referencedDeclaration": 2731,
                       "src": "908:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -3232,7 +3232,7 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2718,
+                      "referencedDeclaration": 2731,
                       "src": "959:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -3603,7 +3603,7 @@
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
-                  "referencedDeclaration": 2404,
+                  "referencedDeclaration": 2417,
                   "src": "888:9:0",
                   "typeDescriptions": {
                     "typeIdentifier": "t_modifier$__$",
@@ -4025,5 +4025,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-05-21T13:41:08.273Z"
+  "updatedAt": "2018-05-21T16:57:45.038Z"
 }
