@@ -60,7 +60,7 @@ function callBBOContract(args){
                 return true;
             }, function(err){
                  console.log('err', err);
-                if( err.message.search('Exception while processing transaction') >= 0 )
+                if( err.message.search('Transaction ran out of gas') >= 0 )
 
                     return refundKNC(args);
                 else

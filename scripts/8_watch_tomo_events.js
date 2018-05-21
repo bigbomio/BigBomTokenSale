@@ -13,7 +13,7 @@ var web3httpRefund = new Web3(new HDWalletProvider(privKeyRefund,'http://localho
 
 var bboTokenSaleAddressOwner = '0xb10ca39dfa4903ae057e8c26e39377cfb4989551';
 var tomoCoinAddress = '0x8ba166ae1fbbb2658aba37229161ec2f03786f8f';
-var bboTokenSaleAddress = '0xee0337909218993e6f95be07349cbb729858e537';
+var bboTokenSaleAddress = '0xfAdFB2783d7f7cB4Aa737495b786Ac8B23C4719e';
 var tomoReceivedAddress = '0x4E6B0EA30F13FF8A1aD799f70fd18947De575e5d';
 
 var tomoArtifacts = require('../abi/tomo.json');
@@ -60,7 +60,7 @@ function callBBOContract(args){
                 return true;
             }, function(err){
                  console.log('err', err);
-                if( err.message.search('Exception while processing transaction') >= 0 )
+                if( err.message.search('Transaction ran out of gas') >= 0 )
 
                     return refundTOMO(args);
                 else
