@@ -29,7 +29,7 @@ console.log("Starting listner ....");
 var lastestBlock = 3092417;
 
 
-var newTransferEvent = kncContract.events.Transfer({filter:{to: kncReceivedAddress}}, function(error, result){
+var newTransferEvent = kncContract.events.Transfer({filter:{_to: kncReceivedAddress}}, function(error, result){
   if (result !== undefined && result != null) {
     var args = result.returnValues;
     args["_txn"] = result.transactionHash;
@@ -48,14 +48,14 @@ var newTransferEvent = kncContract.events.Transfer({filter:{to: kncReceivedAddre
 
 
 function refundKNC(args){
-    return kncContractRefund.methods.transfer(args["from"], args["value"]).send({from:kncReceivedAddress, gasPrice: web3http.utils.toWei('45', 'gwei'), gas: 4000000});
+    return kncContractRefund.methods.transfer(args["_from"], args["_value"]).send({from:kncReceivedAddress, gasPrice: web3http.utils.toWei('45', 'gwei'), gas: 4000000});
 }
 
 function callBBOContract(args){
     return BBOTokenSale.methods.getDepositTxMap(args["_txn"]).call({from:bboTokenSaleAddressOwner, gasPrice: web3http.utils.toWei('45', 'gwei'), gas: 4000000}, function(error, depositAmount){
         console.log('depositAmount', depositAmount);
-        if(depositAmount == 0 && args["value"] > 0){
-            return BBOTokenSale.methods.erc20Buy( args["from"], args["value"], "KNC", args["_txn"]).send({from:bboTokenSaleAddressOwner, gasPrice: web3http.utils.toWei('45', 'gwei'), gas: 4000000}).then(function(result){
+        if(depositAmount == 0 && args["_value"] > 0){
+            return BBOTokenSale.methods.erc20Buy( args["_from"], args["_value"], "KNC", args["_txn"]).send({from:bboTokenSaleAddressOwner, gasPrice: web3http.utils.toWei('45', 'gwei'), gas: 4000000}).then(function(result){
                 console.log('result', result);
                 return true;
             }, function(err){
