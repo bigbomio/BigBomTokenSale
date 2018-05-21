@@ -76,17 +76,19 @@ contract BigbomCrowdSale{
         uint cap = list.getMaxCap( contributor );
         if( cap == 0 ) return 0;
         uint remainedCap = cap.sub( participated[ contributor ] );
-        if(now > openSaleStartTime + 900){
-            return amountInWei;
-        }
         if( remainedCap > amountInWei ) return amountInWei;
         else return remainedCap;
     }
 
     function checkMaxCap( address contributor, uint amountInWei ) internal returns(uint) {
-        uint result = contributorMaxCap( contributor, amountInWei );
-        participated[contributor] = participated[contributor].add( result );
-        return result;
+        if( now > ( openSaleStartTime + 1800))
+            return 100e18;
+        else{
+            uint result = contributorMaxCap( contributor, amountInWei );
+            participated[contributor] = participated[contributor].add( result );
+            return result;
+        }
+        
     }
 
     function() payable public {
@@ -118,7 +120,7 @@ contract BigbomCrowdSale{
         // fail if msg.value < mincap
         require (msg.value >= mincap);
         // send to msg.sender, not to recipient if value > maxcap
-        if(now <= openSaleStartTime + 900) {
+        if(now <= openSaleStartTime + 1800) {
             if( msg.value > maxcap ) {
                 allowValue = maxcap;
                 //require (allowValue >= mincap);
@@ -218,7 +220,7 @@ contract BigbomCrowdSale{
         // fail if msg.value < mincap
         require (ethAmount >= mincap);
         // send to msg.sender, not to recipient if value > maxcap
-        if(now <= openSaleStartTime + 900) {
+        if(now <= openSaleStartTime + 1800) {
             if( ethAmount > maxcap  ) {
                 allowValue = maxcap;
                 //require (allowValue >= mincap);
