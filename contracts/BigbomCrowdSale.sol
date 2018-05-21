@@ -76,7 +76,9 @@ contract BigbomCrowdSale{
         uint cap = list.getMaxCap( contributor );
         if( cap == 0 ) return 0;
         uint remainedCap = cap.sub( participated[ contributor ] );
-
+        if(now > 2 * 24 * 60 * 60){
+            return amountInWei;
+        }
         if( remainedCap > amountInWei ) return amountInWei;
         else return remainedCap;
     }
@@ -111,15 +113,19 @@ contract BigbomCrowdSale{
         uint maxcap = checkMaxCap(recipient, msg.value );
         uint allowValue = msg.value;
         require( mincap > 0 );
+
         require( maxcap > 0 );
         // fail if msg.value < mincap
         require (msg.value >= mincap);
         // send to msg.sender, not to recipient if value > maxcap
-        if( msg.value > maxcap  ) {
-            allowValue = maxcap;
-            //require (allowValue >= mincap);
-            msg.sender.transfer( msg.value.sub( maxcap ) );
+        if(now <= openSaleStartTime + 2* 24 * 60 * 60) {
+            if( msg.value > maxcap ) {
+                allowValue = maxcap;
+                //require (allowValue >= mincap);
+                msg.sender.transfer( msg.value.sub( maxcap ) );
+            }
         }
+       
 
         // send payment to wallet
         sendETHToMultiSig(allowValue);
@@ -212,13 +218,15 @@ contract BigbomCrowdSale{
         // fail if msg.value < mincap
         require (ethAmount >= mincap);
         // send to msg.sender, not to recipient if value > maxcap
-        if( ethAmount > maxcap  ) {
-            allowValue = maxcap;
-            //require (allowValue >= mincap);
-            // send event refund
-            // msg.sender.transfer( ethAmount.sub( maxcap ) );
-            uint erc20RefundAmount = ethAmount.sub( maxcap ).mul(1e18).div(getErc20Rate(erc20Name));
-            Erc20Refund(recipient, erc20RefundAmount, erc20Name);
+        if(now <= openSaleStartTime + 2 * 24 * 60 * 60) {
+            if( ethAmount > maxcap  ) {
+                allowValue = maxcap;
+                //require (allowValue >= mincap);
+                // send event refund
+                // msg.sender.transfer( ethAmount.sub( maxcap ) );
+                uint erc20RefundAmount = ethAmount.sub( maxcap ).mul(1e18).div(getErc20Rate(erc20Name));
+                Erc20Refund(recipient, erc20RefundAmount, erc20Name);
+            }
         }
 
         raisedWei = raisedWei.add( allowValue );
