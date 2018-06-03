@@ -1,7 +1,7 @@
 const Web3 = require('web3');
 var contract = require('truffle-contract');
 const HDWalletProvider = require("truffle-hdwallet-provider-privkey");
-var privKeys = 'a4441292066b9ca53906d183b2d3d16d34c1328424874219f1de4a5f6417554c';
+var privKeys = '';
 
 
 var web3wss = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8546'));
